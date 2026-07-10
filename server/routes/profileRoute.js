@@ -12,7 +12,6 @@ const profileRouter = new Router({
   prefix: "/profile",
 });
 
-
 // GET /api/profile/
 profileRouter.get("/", getProfile)
 // PATCH /api/profile/

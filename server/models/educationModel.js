@@ -20,9 +20,9 @@ async function createEducation({ start_date, end_date, title, company, location,
    }
 
    const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-   const query = `UPDATE education SET ${setClause} WHERE id = ${keys.length + 1} RETURNING id`
+   const query = `UPDATE education SET ${setClause} WHERE id = $${keys.length + 1} RETURNING id`
 
-   const result = runQuery(query, values)
+   const result = await runQuery(query, [...values, id])
    return result.rows[0].id
  }
 

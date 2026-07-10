@@ -12,17 +12,17 @@ async function createSkill({name, year}) {
 }
 
 async function patchSkillById(id, updates) {
-  const keys = object.keys(updates)
-  const values = object.values(updates)
+  const keys = Object.keys(updates)
+  const values = Object.values(updates)
 
   if (keys.length === 0) {
    throw new Error("No update fields provided.");
   }
 
   const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE skills SET ${setClause} WHERE id = ${keys.length + 1} RETURNING id`
+  const query = `UPDATE skills SET ${setClause} WHERE id = $${keys.length + 1} RETURNING id`
 
-  const result = runQuery(query, values)
+  const result = await runQuery(query, [...values, id])
   return result.rows[0].id
 }
 

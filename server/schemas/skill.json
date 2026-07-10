@@ -1,0 +1,55 @@
+{
+  "definitions": {
+    "getAllSkills": {
+      "id": "getAllSkills",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "createSkill": {
+      "id": "createSkill",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 0
+        },
+        "year": {
+          "type": "string",
+          "pattern": "^\\d{4}$"
+        }
+      },
+      "required": ["name", "year"],
+      "additionalProperties": false
+    },
+    "patchSkill": {
+      "id": "patchSkill",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "year": {
+          "type": "string",
+          "pattern": "^\\d{4}$"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    },
+    "deleteSkill": {
+      "id": "deleteSkill",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    }
+  }
+}

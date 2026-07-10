@@ -1,0 +1,115 @@
+{
+  "definitions": {
+    "getAllExperiences": {
+      "id": "getAllExperiences",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "createExperience": {
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "employment_type": {
+          "type": "string",
+          "enum": [
+            "full-time",
+            "part-time",
+            "internship",
+            "contract",
+            "freelance"
+          ]
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 65535
+        }
+      },
+      "required": ["start_date", "end_date", "title", "company", "location", "description"],
+      "additionalProperties": false
+    },
+    "patchExperience": {
+      "id": "patchExperience",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "employment_type": {
+          "type": "string",
+          "enum": [
+            "full-time",
+            "part-time",
+            "internship",
+            "contract",
+            "freelance"
+          ]
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 65535
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    },
+    "deleteExperience": {
+      "id": "deleteExperience",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -39,7 +39,7 @@ CREATE TABLE projects (
     live_demo_url VARCHAR(2048),
     thumbnail_url  VARCHAR(256),
     deleted BOOLEAN NOT NULL DEFAULT FALSE,
-    favourite BOOLEAN NOT NULL DEFAULT FALSE,
+    featured BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
 

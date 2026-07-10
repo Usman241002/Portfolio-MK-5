@@ -1,24 +1,20 @@
 import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
 
-import { getAllEducation,
-createEducation,
-getEducation,
-putEducation,
-patchEducation,
-deleteEducation } from "../controllers/educationController.js"
+import { getAllEducation, createEducation, patchEducation, deleteEducation } from "../controllers/educationController.js"
+import { getAllEducationValidation, createEducationValidation, patchEducationValidation, deleteEducationValidation } from "../validation/educationValidation.js"
 
 const educationRouter = new Router({
   prefix: "/education",
 });
 
 // GET /api/education/
-educationRouter.get("/", getAllEducation)
+educationRouter.get("/", getAllEducationValidation, getAllEducation)
 // POST /api/education/
-educationRouter.post("/", createEducation)
+educationRouter.post("/", createEducationValidation, jwtMiddleware, createEducation)
 // PATCH /api/education/:id
-educationRouter.patch("/:id", patchEducation)
+educationRouter.patch("/:id", patchEducationValidation, jwtMiddleware, patchEducation)
 // DELETE /api/education/:id
-educationRouter.delete("/:id", deleteEducation)
+educationRouter.delete("/:id", deleteEducationValidation, jwtMiddleware, deleteEducation)
 
 export default educationRouter;

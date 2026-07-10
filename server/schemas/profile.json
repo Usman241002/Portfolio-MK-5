@@ -1,0 +1,48 @@
+{
+  "definitions": {
+    "getProfile": {
+      "id": "getProfile",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "patchProfile": {
+      "id": "patchProfile",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 4
+        },
+        "role": {
+          "type": "string",
+          "minLength": 4
+        },
+        "location": {
+          "type": "string",
+          "minLength": 4
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open to work", "selective projects", "not available"]
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 8
+        },
+        "github_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "linkedin_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false,
+      "minProperties": 1
+    }
+  }
+}

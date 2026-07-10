@@ -1,0 +1,95 @@
+{
+  "definitions": {
+    "getAllEducation": {
+      "id": "getAllEducation",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "createEducation": {
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 65535
+        }
+      },
+      "required": ["start_date", "end_date", "title", "company", "location", "description"],
+      "additionalProperties": false
+    },
+    "patchEducation": {
+      "id": "patchEducation",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_date": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 65535
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    },
+    "deleteEducation": {
+      "id": "deleteEducation",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties": false
+    }
+  }
+}

@@ -27,6 +27,6 @@ export async function handleContact(ctx) {
   } catch (err) {
     console.error(err);
     ctx.status = 500;
-    ctx.body = { error: "Email failed" };
+    ctx.body = { message: "Email failed" };
   }
 }

@@ -1,5 +1,7 @@
 import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
+import { loginUser } from "../controllers/authController.js";
+import { loginValidator } from "../validation/authValidation.js"
 
 const authRouter = new Router({
   prefix: "/auth",
@@ -12,6 +14,6 @@ authRouter.post("/verify", jwtMiddleware, (ctx) => {
 });
 
 //POST /api/auth/login
-authRouter.post("/login", loginUser);
+authRouter.post("/login", loginValidator, loginUser);
 
 export default authRouter;

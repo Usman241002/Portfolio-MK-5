@@ -1,15 +1,13 @@
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt"
 
 export async function loginUser(ctx) {
   try {
     const { email, password } = ctx.request.body;
 
-    const hashedPassword = bcrypt.hashSync(password, 12);
+    const isPasswordValid = bcrypt.compareSync(password, process.env.ADMIN_PASSWORD);
 
-    if (
-      email !== process.env.ADMIN_EMAIL ||
-      hashedPassword !== process.env.ADMIN_PASSWORD
-    ) {
+    if (email !== process.env.ADMIN_EMAIL || !isPasswordValid) {
       ctx.status = 401;
       ctx.body = { message: "Invalid username or password" };
       return;

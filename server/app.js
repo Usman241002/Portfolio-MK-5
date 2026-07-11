@@ -6,15 +6,13 @@ import dotenv from "dotenv";
 import serve from "koa-static";
 import fs from "fs";
 
-import profileRouter from "profileRoute.js"
-import projectRouter from "projectRoute.js"
-import caseRouter from "caseRoute.js"
-import skillRouter from "skillRoute.js"
-import projectSkillsRouter from "projectSkillsRoute.js"
-import educationRouter from "educationRoute.js"
-import experienceRouter from "experienceRoute.js"
-import authRouter from "authRoute.js"
-import contactRouter from "contactRoute.js"
+// import profileRouter from "./routes/profileRoute.js"
+// import projectRouter from "./routes/projectRoute.js"
+// import skillRouter from "./routes/skillRoute.js"
+// import educationRouter from "./routes/educationRoute.js"
+// import experienceRouter from "./routes/experienceRoute.js"
+import authRouter from "./routes/authRoute.js"
+import contactRouter from "./routes/contactRoute.js"
 
 dotenv.config();
 
@@ -84,13 +82,11 @@ const router = new Router({
   prefix: "/api",
 });
 
-router.use(profileRouter.routes())
-router.use(projectRouter.routes())
-router.use(caseRouter.routes())
-router.use(skillRouter.routes())
-router.use(projectSkillsRouter.routes())
-router.use(educationRouter.routes())
-router.use(experienceRouter.routes())
+// router.use(profileRouter.routes())
+// router.use(projectRouter.routes())
+// router.use(skillRouter.routes())
+// router.use(educationRouter.routes())
+// router.use(experienceRouter.routes())
 router.use(authRouter.routes())
 router.use(contactRouter.routes())
 

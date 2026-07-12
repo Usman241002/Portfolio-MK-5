@@ -20,14 +20,15 @@ async function patchExperienceById(id, updates) {
   }
 
   const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE experiences SET ${setClause} WHERE id = $${keys.length + 1} RETURNING id`
+  const query = `UPDATE experiences SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
 
   const result = await runQuery(query, [...values, id])
-  return result.rows[0].id
+  return result[0]
 }
 
 async function deleteExperienceById(id) {
-  return await runQuery("DELETE FROM experiences WHERE id = $1", [id]);
+  const result = await runQuery("DELETE FROM experiences WHERE id = $1 RETURNING id", [id]);
+  return result[0]
 }
 
 export const experienceModel = {

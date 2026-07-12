@@ -1,4 +1,3 @@
-import { beforeEach, afterEach, afterAll, expect, describe, it, jest } from "@jest/globals";
 import { loginUser, verifyUser, validLoginPayload } from "./helpers/authHelpers.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -22,85 +21,84 @@ describe("Auth API", () => {
   });
 
   describe("POST /api/auth/login", () => {
-    const loginScenarios = [
-      {
-        description: "user successfully logs in and token is created",
-        payload: undefined,
-        expectedStatus: 200,
-        expectedMsg: "Login successful",
-        expectedProperties: ["token"]
-      },
-      {
-        description: "invalid input format",
-        payload: { email: "not_email", password: 1234 },
-        expectedStatus: 400,
-      },
-      {
-        description: "incorrect email",
-        payload: { ...validLoginPayload, email: "wrong@gmail.com" },
-        expectedStatus: 401,
-        expectedMsg: "Invalid username or password"
-      },
-      {
-        description: "incorrect password",
-        payload: { ...validLoginPayload, password: "wrongPassword" },
-        expectedStatus: 401,
-        expectedMsg: "Invalid username or password"
+    it("should log in user and provide a token", async () => {
+      const res = await loginUser()
+
+      expect(res.status).toBe(200)
+      expect(res.body.message).toBe("Login successful")
+      expect(res.body.token).toBeDefined()
+    })
+
+    it("should return 400 if invalid input", async () => {
+      const payload = {
+        email: "not_email",
+        password: 1234
       }
-    ];
 
-    it.each(loginScenarios)("should return $expectedStatus if $description", async ({ payload, expectedStatus, expectedMsg, expectedProperties = [] }) => {
-      const res = await loginUser(payload);
+      const res = await loginUser(payload)
 
-      expect(res.status).toBe(expectedStatus);
+      expect(res.status).toBe(400)
+    })
 
-      if (expectedMsg) expect(res.body.message).toBe(expectedMsg);
-
-      if (expectedProperties.length > 0) {
-        for (const property of expectedProperties) {
-          expect(res.body).toHaveProperty(property);
-        }
+    it("should return 401 if email is incorrect", async () => {
+      const payload = {
+        ...validLoginPayload,
+        email: "wrongEmail@gmail.com"
       }
-    });
 
-    it("should return 500 if database error", async () => {
-      jest.spyOn(bcrypt, "compareSync").mockImplementation(() => {
-        throw new Error("Simulated Server Error");
-      });
+      const res = await loginUser(payload)
+
+      expect(res.status).toBe(401)
+      expect(res.body.message).toBe("Invalid username or password")
+    })
+
+    it("should return 401 if password is incorrect", async () => {
+      const payload = {
+        ...validLoginPayload,
+        password: "incorrectPassword"
+      }
+
+      const res = await loginUser(payload)
+
+      expect(res.status).toBe(401)
+      expect(res.body.message).toBe("Invalid username or password")
+
+    })
+
+    it("should return 500 for database error", async () => {
+      jest
+        .spyOn(bcrypt, "compareSync")
+        .mockImplementation(() => {
+          throw new Error("Simulated Server Error");
+        });
 
       const res = await loginUser();
+
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to login user");
     });
-  });
+  })
 
   describe("POST /api/auth/verify", () => {
-    // We generate these dynamically so they use the current env secret
-    const verifyScenarios = [
-      {
-        description: "user successfully verified",
-        payload: undefined, // Valid token
-        expectedStatus: 200,
-      },
-      {
-        description: "token is invalid",
-        payload: { token: "invalid_token" },
-        expectedStatus: 401,
-        expectedMsg: undefined
-      },
-      {
-        description: "token is expired",
-        payload: { token: jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" }) },
-        expectedStatus: 401,
-        expectedMsg: undefined
-      }
-    ];
 
-    it.each(verifyScenarios)("should return $expectedStatus if $description", async ({ payload, expectedStatus, expectedMsg }) => {
-      const res = await verifyUser(payload);
+    it("should return 200 if user verified", async () => {
+      const res = await verifyUser()
 
-      expect(res.status).toBe(expectedStatus);
-      if (expectedMsg) expect(res.body.message).toBe(expectedMsg);
+      expect(res.status).toBe(200)
+    })
+
+    it("should return 401 if token is invalid", async () => {
+      const token = jwt.sign({}, "invalid_secret_key");
+      const res = await verifyUser(token);
+
+      expect(res.status).toBe(401);
+    });
+
+    it("should return 401 if token is expired", async () => {
+      const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
+      const res = await verifyUser(token); // Adjust args based on your helper signature
+
+      expect(res.status).toBe(401);
     });
   });
-});
+})

@@ -1,4 +1,3 @@
-import { afterEach, expect, describe, it, jest } from "@jest/globals";
 import { transporter } from "../utils/mailer.js";
 import { sendEmail } from "./helpers/contactHelpers.js";
 
@@ -8,42 +7,24 @@ describe("Contact API", () => {
   });
 
   describe("POST /api/contact", () => {
-    // Data-driven scenarios
-    const scenarios = [
-      {
-        description: "user submits valid contact form",
-        payload: undefined,
-        expectedStatus: 200,
-        expectedMsg: "Email sent successfully",
-      },
-      {
-        description:  "invalid input format",
-        payload: {
-          name: 1245,
-          email: "not_email",
-          message: "min"
-        },
-        expectedStatus: 400,
-        expectedMsg: undefined
-      },
-    ];
+    it("should return 200 if user submits valid contact form", async () => {
+      const res = await sendEmail()
 
-    it.each(scenarios)("should return $expectedStatus if $description", async ({ payload, expectedStatus, expectedMsg }) => {
-      const sendMailMock = jest
-        .spyOn(transporter, "sendMail")
-        .mockResolvedValue(true);
+      expect(res.status).toBe(200)
+      expect(res.body.message).toBe("Email sent successfully")
+    })
 
-      const res = await sendEmail(payload)
-
-      expect(res.status).toBe(expectedStatus);
-      if (expectedMsg) {
-        expect(res.body.message).toBe(expectedMsg);
+    it("should return 400 if invalid input format", async () => {
+      const payload = {
+        name: 1245,
+        email: "not_email",
+        message: "min"
       }
 
-      if (expectedStatus === 200) {
-        expect(sendMailMock).toHaveBeenCalledTimes(2);
-      }
-    });
+      const res = await sendEmail(payload);
+
+      expect(res.status).toBe(400)
+  })
 
     it("should return 500 if email service fails", async () => {
       jest

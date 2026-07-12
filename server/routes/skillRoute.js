@@ -1,7 +1,12 @@
 import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
 
-import { getSkills, createSkill, patchSkill, deleteSkill } from "../controllers/skillController.js"
+import {
+  getSkills,
+  createSkill,
+  patchSkill,
+  deleteSkill
+} from "../controllers/skillController.js"
 import { getSkillsValidation, createSkillValidation, patchSkillValidation, deleteSkillValidation } from "../validation/skillValidation.js"
 
 const skillRouter = new Router({
@@ -12,9 +17,9 @@ const skillRouter = new Router({
 skillRouter.get("/", getSkillsValidation, getSkills)
 // POST /api/skills/
 skillRouter.post("/", createSkillValidation, jwtMiddleware, createSkill)
-// PATCH /api/skills/:id
+// // PATCH /api/skills/:id
 skillRouter.patch("/:id", patchSkillValidation, jwtMiddleware, patchSkill)
-// DELETE /api/skills/:id
+// // DELETE /api/skills/:id
 skillRouter.delete("/:id", deleteSkillValidation, jwtMiddleware, deleteSkill)
 
 export default skillRouter;

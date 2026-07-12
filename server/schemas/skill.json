@@ -1,7 +1,7 @@
 {
   "definitions": {
-    "getAllSkills": {
-      "id": "getAllSkills",
+    "getSkills": {
+      "id": "getSkills",
       "type": "object",
       "properties": {},
       "required": [],
@@ -16,8 +16,8 @@
           "minLength": 0
         },
         "year": {
-          "type": "string",
-          "pattern": "^\\d{4}$"
+          "type": "number",
+          "min": 2020
         }
       },
       "required": ["name", "year"],
@@ -27,13 +27,17 @@
       "id": "patchSkill",
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
         "name": {
           "type": "string",
           "minLength": 1
         },
         "year": {
-          "type": "string",
-          "pattern": "^\\d{4}$"
+          "type": "number",
+          "min": 2020
         }
       },
       "additionalProperties": false,

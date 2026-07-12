@@ -4,9 +4,10 @@ async function getProfile() {
   const result = await runQuery("SELECT * FROM profile");
   return result.rows
 }
-async function patchProfile() {
-  const keys = object.keys(updates)
-  const values = object.values(updates)
+
+async function patchProfile(updates) {
+  const keys = Object.keys(updates)
+  const values = Object.values(updates)
 
   if (keys.length === 0) {
    throw new Error("No update fields provided.");
@@ -19,4 +20,7 @@ async function patchProfile() {
   return result.rows[0]
 }
 
-export const profileModel = {};
+export const profileModel = {
+  getProfile,
+  patchProfile
+};

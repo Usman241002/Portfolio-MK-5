@@ -21,3 +21,11 @@ export async function resetDatabase() {
     throw error;
   }
 }
+
+export async function seedSkill() {
+  await runQuery("INSERT INTO skills (name, year) VALUES ('React', 2025);")
+}
+
+export async function seedSkills() {
+  await runQuery("INSERT INTO skills (name, year) VALUES ('React', 2025), ('Typescript', 2024), ('C++', 2023);")
+}

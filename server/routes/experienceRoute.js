@@ -2,7 +2,7 @@ import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
 
 import { getExperiences, createExperience, patchExperience, deleteExperience } from "../controllers/experienceController.js"
-import { getAllExperiencesValidation, createExperienceValidation, patchExperienceValidation, deleteExperienceValidation } from "../validation/educationValidation.js"
+import { getAllExperiencesValidation, createExperienceValidation, patchExperienceValidation, deleteExperienceValidation } from "../validation/experienceValidation.js"
 
 
 const experienceRouter = new Router({

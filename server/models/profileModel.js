@@ -2,7 +2,7 @@ import { runQuery } from "../database/helpers/database.js";
 
 async function getProfile() {
   const result = await runQuery("SELECT * FROM profile");
-  return result.rows
+  return result[0]
 }
 
 async function patchProfile(updates) {
@@ -17,7 +17,7 @@ async function patchProfile(updates) {
   const query = `UPDATE profile SET ${setClause} RETURNING *`
 
   const result = await runQuery(query, values)
-  return result.rows[0]
+  return result[0]
 }
 
 export const profileModel = {

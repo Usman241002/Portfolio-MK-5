@@ -1,6 +1,6 @@
 import { resetDatabase, seedSkill, seedSkills } from "./helpers/dbHelpers.js";
 import { skillModel } from "../models/skillModel.js";
-import { getSkills, createSkill, patchSkillById, deleteSkillById } from "./helpers/skillHelpers.js";
+import { getSkills, createSkill, patchSkill, deleteSkill } from "./helpers/skillHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -75,6 +75,7 @@ describe("Skill API", () => {
 
       expect(res.status).toBe(201)
       expect(res.body.message).toBe("Skill created successfully")
+      expect(res.body.skillId).toEqual(expect.any(Number))
     })
 
     it("should return 400 if invalid input", async () => {
@@ -121,7 +122,7 @@ describe("Skill API", () => {
     })
 
     it("should return 200 if skill updated", async () => {
-      const res = await patchSkillById(1)
+      const res = await patchSkill(1)
       expect(res.status).toBe(200)
     })
 
@@ -131,7 +132,7 @@ describe("Skill API", () => {
         year: "string"
       }
 
-      const res = await patchSkillById("number", payload, undefined)
+      const res = await patchSkill("number", payload, undefined)
 
       expect(res.status).toBe(400)
     })
@@ -139,7 +140,7 @@ describe("Skill API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await patchSkillById(1, undefined, token)
+      const res = await patchSkill(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
@@ -147,13 +148,13 @@ describe("Skill API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await patchSkillById(1, undefined, token)
+      const res = await patchSkill(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
 
     it("should return 404 if skill not found", async () => {
-      const res = await patchSkillById(999)
+      const res = await patchSkill(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Skill not found")
@@ -164,7 +165,7 @@ describe("Skill API", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchSkillById(1);
+      const res = await patchSkill(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update skill");
     });
@@ -176,14 +177,14 @@ describe("Skill API", () => {
     });
 
     it("should return 200 if skill deleted", async () => {
-      const res = await deleteSkillById(1);
+      const res = await deleteSkill(1);
 
       expect(res.status).toBe(200);
       expect(res.body.message).toBe("Skill deleted successfully")
     })
 
     it("should return 400 if invalid input", async () => {
-      const res = await deleteSkillById("number", undefined)
+      const res = await deleteSkill("number", undefined)
 
       expect(res.status).toBe(400)
     })
@@ -191,7 +192,7 @@ describe("Skill API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await deleteSkillById(1, token)
+      const res = await deleteSkill(1, token)
 
       expect(res.status).toBe(401)
     } )
@@ -199,13 +200,13 @@ describe("Skill API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await deleteSkillById(1, token)
+      const res = await deleteSkill(1, token)
 
       expect(res.status).toBe(401)
     })
 
     it("should return 404 if skill not found", async () => {
-      const res = await deleteSkillById(999)
+      const res = await deleteSkill(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Skill not found")
@@ -216,9 +217,9 @@ describe("Skill API", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await createSkill();
+      const res = await deleteSkill(1);
       expect(res.status).toBe(500);
-      expect(res.body.message).toBe("Failed to create skill");
+      expect(res.body.message).toBe("Failed to delete skill");
     });
   })
 })

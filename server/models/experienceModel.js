@@ -2,13 +2,13 @@ import { runQuery } from "../database/helpers/database.js";
 
 async function getAllExperiences() {
   const result = await runQuery("SELECT * FROM experiences");
-  return result.rows
+  return result
 }
 
 async function createExperience({ start_date, end_date, title, company, employment_type, location, description }) {
    const query = "INSERT INTO experiences (start_date, end_date, title, company, employment_type, location, description) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;"
    const result = await runQuery(query, [start_date, end_date, title, company, employment_type, location, description])
-   return result.rows[0].id
+   return result[0].id
 }
 
 async function patchExperienceById(id, updates) {

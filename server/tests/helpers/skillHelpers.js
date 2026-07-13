@@ -15,10 +15,10 @@ export async function createSkill(payload = validSkillPayload, token = validToke
   return await request(app.callback()).post("/api/skills").send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
-export async function patchSkillById(id, payload = validSkillPayload, token = validToken) {
+export async function patchSkill(id, payload = validSkillPayload, token = validToken) {
   return await request(app.callback()).patch(`/api/skills/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
-export async function deleteSkillById(id, token = validToken) {
+export async function deleteSkill(id, token = validToken) {
   return await request(app.callback()).delete(`/api/skills/${id}`).set("Authorization", token ? `Bearer ${token}` : "")
 }

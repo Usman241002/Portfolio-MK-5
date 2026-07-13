@@ -16,6 +16,7 @@
   "dependencies": {
     "@koa/cors": "^5.0.0",
     "bcrypt": "^6.0.0",
+    "dayjs": "^1.11.21",
     "dotenv": "^17.4.2",
     "jsonschema": "^1.5.0",
     "jsonwebtoken": "^9.0.3",
@@ -39,6 +40,8 @@
     "supertest": "^7.2.2"
   },
   "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ]
   }
 }

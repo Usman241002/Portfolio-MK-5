@@ -4,7 +4,7 @@ export async function getSkills(ctx) {
   try {
     const skills = await skillModel.getAllSkills()
 
-    if (skills.length <= 0) {
+    if (skills.length === 0) {
       ctx.status = 404
       ctx.body = {
         message: "No skills found"
@@ -26,9 +26,7 @@ export async function getSkills(ctx) {
 
 export async function createSkill(ctx) {
   try {
-    const { name, year } = ctx.request.body
-
-    const skillId = await skillModel.createSkill(name, year);
+    const skillId = await skillModel.createSkill(ctx.request.body);
 
     ctx.status = 201;
     ctx.body = {

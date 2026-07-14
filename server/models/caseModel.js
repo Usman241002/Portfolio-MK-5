@@ -2,7 +2,7 @@ import { runQuery } from "../database/helpers/database.js";
 
 async function getCasesByProjectId(projectId) {
   const result = await runQuery("SELECT * FROM cases WHERE project_id = $1", [projectId]);
-  return result.rows
+  return result
 }
 
 async function createCaseByProjectId(projectId, caseData) {
@@ -10,7 +10,7 @@ async function createCaseByProjectId(projectId, caseData) {
 
   const query = "INSERT INTO cases (project_id, heading, subheading, descriptionstat, stat_description, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;"
   const result = await runQuery(query, [projectId, heading, subheading, descriptionstat, stat_description, image_url])
-  return result.rows[0].id
+  return result[0].id
 }
 
 async function patchCaseById(id, updates) {

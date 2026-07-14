@@ -1,0 +1,53 @@
+{
+  "definitions" : {
+    "getProjects" : {
+      "id" : "getProjects",
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties" : false
+  },
+    "createProject" : {
+      "id" : "createProject",
+      "type": "object",
+      "properties": {
+
+      },
+      "required": [],
+      "additionalProperties" : false
+  },
+    "getProject" : {
+      "id" : "getProject",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties" : false
+    },
+    "patchProject" : {
+      "id" : "patchProject",
+      "type": "object",
+      "properties": {
+
+      },
+      "required": [],
+      "additionalProperties" : false
+    },
+    "deleteProject" : {
+      "id" : "deleteProject",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      },
+      "required": ["id"],
+      "additionalProperties" : false
+    }
+  }
+}

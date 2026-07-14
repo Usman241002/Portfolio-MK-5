@@ -7,7 +7,7 @@ import serve from "koa-static";
 import fs from "fs";
 
 import profileRouter from "./routes/profileRoute.js"
-// import projectRouter from "./routes/projectRoute.js"
+import projectRouter from "./routes/projectRoute.js"
 import skillRouter from "./routes/skillRoute.js"
 import educationRouter from "./routes/educationRoute.js"
 import experienceRouter from "./routes/experienceRoute.js"
@@ -83,7 +83,7 @@ const router = new Router({
 });
 
 router.use(profileRouter.routes())
-// router.use(projectRouter.routes())
+router.use(projectRouter.routes())
 router.use(skillRouter.routes())
 router.use(educationRouter.routes())
 router.use(experienceRouter.routes())

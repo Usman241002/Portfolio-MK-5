@@ -1,14 +1,14 @@
 import { runQuery } from "../database/helpers/database.js";
 
-async function getProjectSkillsbyProjectId(projectId) {
+async function getProjectSkillsByProjectId(projectId) {
   const result = await runQuery("SELECT * FROM project_skills WHERE project_id = $1", [projectId]);
-  return result.rows
+  return result
 }
 
 async function createProjectSkill(projectId, skillId) {
   const query = "INSERT INTO cases (project_id, skillId) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;"
   const result = await runQuery(query, [projectId, skillId])
-  return result.rows[0].id
+  return result[0].id
 }
 
 async function patchProjectSkill(id, updates) {
@@ -32,7 +32,7 @@ async function deleteProjectSkill(id) {
 }
 
 export const projectSkillModel = {
-  getProjectSkillsbyProjectId,
+  getProjectSkillsByProjectId,
   createProjectSkill,
   patchProjectSkill,
   deleteProjectSkill

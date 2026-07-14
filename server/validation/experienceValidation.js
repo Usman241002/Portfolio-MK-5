@@ -1,5 +1,5 @@
 import makeKoaValidator from "../middleware/validation.js";
-import experienceJson from "../schemas/experience.json"
+import experienceJson from "../schemas/experience.json" with { type: "json" };
 
 const getAllExperiencesSchema = experienceJson.definitions.getAllExperiences
 const createExperienceSchema = experienceJson.definitions.createExperience

@@ -1,5 +1,5 @@
 import makeKoaValidator from "../middleware/validation.js";
-import profileJson from "../schemas/profile.json"
+import profileJson from "../schemas/profile.json" with { type: "json" };
 
 const getProfileSchema = profileJson.definitions.getProfile
 const patchProfileSchema = profileJson.definitions.patchProfile

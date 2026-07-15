@@ -6,11 +6,8 @@ async function getAllSkills() {
 }
 
 async function createSkill({name, year}) {
-  console.log("HERE HERE HERE 2")
-
   const query = "INSERT INTO skills (name, year) VALUES ($1, $2) RETURNING id;"
   const result = await runQuery(query, [name, year])
-  console.log(result)
   return result[0].id
 }
 

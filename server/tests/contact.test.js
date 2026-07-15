@@ -1,9 +1,12 @@
+import { afterEach, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { transporter } from "../utils/mailer.js";
 import { sendEmail } from "./helpers/contactHelpers.js";
 
 describe("Contact API", () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
   describe("POST /api/contact", () => {
@@ -27,9 +30,9 @@ describe("Contact API", () => {
   })
 
     it("should return 500 if email service fails", async () => {
-      jest
-        .spyOn(transporter, "sendMail")
-        .mockRejectedValue(new Error("Simulated SMTP Error"));
+      mock.method(transporter, "sendMail", async () => {
+        throw new Error("Simulated SMTP Error");
+      });
 
       const res = await sendEmail()
 

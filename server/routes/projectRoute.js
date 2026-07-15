@@ -5,9 +5,9 @@ import { getProjects, createProject, getProject, patchProject, deleteProject } f
 import {
   getProjectsValidation,
   getProjectValidation,
-  // createProjectValidation,
-  // patchProjectValidation,
-  deleteProjectsValidation
+  createProjectValidation,
+  patchProjectValidation,
+  deleteProjectValidation
 } from "../validation/projectValidation.js";
 const projectRouter = new Router({
   prefix: "/projects",
@@ -16,12 +16,12 @@ const projectRouter = new Router({
 // GET /api/projects/
 projectRouter.get("/", getProjectsValidation, getProjects)
 // POST /api/projects/
-projectRouter.post("/", jwtMiddleware, createProject)
+projectRouter.post("/", createProjectValidation, jwtMiddleware, createProject)
 // GET /api/projects/:id
 projectRouter.get("/:id", getProjectValidation, getProject)
 // PATCH /api/projects/:id
-projectRouter.patch("/:id", jwtMiddleware, patchProject)
+projectRouter.patch("/:id", patchProjectValidation, jwtMiddleware, patchProject)
 // DELETE /api/projects/:id
-projectRouter.delete("/:id", deleteProjectsValidation, jwtMiddleware, deleteProject)
+projectRouter.delete("/:id", deleteProjectValidation, jwtMiddleware, deleteProject)
 
 export default projectRouter;

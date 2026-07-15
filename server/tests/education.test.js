@@ -1,3 +1,6 @@
+import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { resetDatabase, seedEducations, seedEducation } from "./helpers/dbHelpers.js";
 import { educationModel } from "../models/educationModel.js";
 import { getAllEducation, createEducation, patchEducation, deleteEducation } from "./helpers/educationHelpers.js";
@@ -15,10 +18,10 @@ describe("Education API", () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
-  afterAll(() => {
+  after(() => {
     process.env = originalEnv;
   });
 
@@ -58,7 +61,7 @@ describe("Education API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(educationModel, "getAllEducation").mockImplementation(() => {
+      mock.method(educationModel, "getAllEducation", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -109,7 +112,7 @@ describe("Education API", () => {
     } )
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(educationModel, "createEducation").mockImplementation(() => {
+      mock.method(educationModel, "createEducation", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -164,7 +167,7 @@ describe("Education API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(educationModel, "patchEducationById").mockImplementation(() => {
+      mock.method(educationModel, "patchEducationById", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -216,7 +219,7 @@ describe("Education API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(educationModel, "deleteEducationById").mockImplementation(() => {
+      mock.method(educationModel, "deleteEducationById", () => {
         throw new Error("Simulated Server Error");
       });
 

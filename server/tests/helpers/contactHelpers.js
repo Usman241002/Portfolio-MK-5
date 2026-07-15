@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../app";
+import app from "../../app.js";
 
 export const validContactPayload = {
   name: "Test User",

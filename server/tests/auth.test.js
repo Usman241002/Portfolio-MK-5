@@ -1,3 +1,6 @@
+import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { loginUser, verifyUser, validLoginPayload } from "./helpers/authHelpers.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -13,10 +16,10 @@ describe("Auth API", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
-  afterAll(() => {
+  after(() => {
     process.env = originalEnv;
   });
 
@@ -66,9 +69,7 @@ describe("Auth API", () => {
     })
 
     it("should return 500 for database error", async () => {
-      jest
-        .spyOn(bcrypt, "compareSync")
-        .mockImplementation(() => {
+      mock.method(bcrypt, "compareSync", () => {
           throw new Error("Simulated Server Error");
         });
 

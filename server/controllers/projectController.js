@@ -40,7 +40,38 @@ export const getProjects = async (ctx) => {
 };
 
 export const createProject = async (ctx) => {
+  try {
+    const { skills, cases, ...projectData } = ctx.request.body;
 
+    console.log(projectData);
+
+    const projectId = await projectModel.createProject(projectData);
+
+    if (skills && skills.length > 0) {
+      const skillPromises = skills.map(skillId =>
+        projectSkillModel.createProjectSkill(projectId, skillId)
+      );
+      await Promise.all(skillPromises);
+    }
+
+    if (cases && cases.length > 0) {
+      const casePromises = cases.map(caseItem =>
+        caseModel.createCaseByProjectId(projectId, caseItem)
+      );
+      await Promise.all(casePromises);
+    }
+
+    ctx.status = 201;
+    ctx.body = {
+      message: "Project created successfully",
+      projectId
+    };
+
+  } catch (error) {
+    console.error(error);
+    ctx.status = 500;
+    ctx.body = { message: "Failed to create project" };
+  }
 };
 
 export const getProject = async (ctx) => {
@@ -78,7 +109,53 @@ export const getProject = async (ctx) => {
 };
 
 export const patchProject = async (ctx) => {
+  try {
+    const projectId = ctx.params.id;
+    const { skills, cases, ...projectData } = ctx.request.body;
 
+    const existingProject = await projectModel.getProjectById(projectId);
+    if (!existingProject) {
+      ctx.status = 404;
+      ctx.body = { message: "Project not found" };
+      return;
+    }
+
+    if (Object.keys(projectData).length > 0) {
+      await projectModel.patchProjectById(projectId, projectData);
+    }
+
+    if (skills) {
+      await projectSkillModel.deleteProjectSkillsByProjectId(projectId);
+
+      if (skills.length > 0) {
+        const skillPromises = skills.map(skillId =>
+          projectSkillModel.createProjectSkill(projectId, skillId)
+        );
+        await Promise.all(skillPromises);
+      }
+    }
+
+    if (cases) {
+      await caseModel.deleteCasesByProjectId(projectId);
+
+      if (cases.length > 0) {
+        const casePromises = cases.map(caseItem =>
+          caseModel.createCaseByProjectId(projectId, caseItem)
+        );
+        await Promise.all(casePromises);
+      }
+    }
+
+    ctx.status = 200;
+    ctx.body = {
+      message: "Project updated successfully"
+    };
+
+  } catch (error) {
+    console.error(error);
+    ctx.status = 500;
+    ctx.body = { message: "Failed to update project" };
+  }
 };
 
 export const deleteProject = async (ctx) => {

@@ -1,9 +1,8 @@
-import { profileModel } from "../models/profileModel";
+import { profileModel } from "../models/profileModel.js";
 
 export async function getProfile(ctx) {
   try {
     const profile = await profileModel.getProfile()
-    console.log(profile)
 
     if (!profile) {
       ctx.status = 404

@@ -12,7 +12,7 @@ async function createProject({ title, subtitle, client, role, year, description,
 }
 
 async function getProjectById(id) {
-  const result = await runQuery("SELECT * FROM projects WHERE id = $1 AND deleted = false", [id]);
+  const result = await runQuery("SELECT * FROM projects WHERE id = $1", [id]);
   return result[0]
 }
 

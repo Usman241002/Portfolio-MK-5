@@ -1,3 +1,6 @@
+import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { resetDatabase, seedSkill, seedSkills } from "./helpers/dbHelpers.js";
 import { skillModel } from "../models/skillModel.js";
 import { getSkills, createSkill, patchSkill, deleteSkill } from "./helpers/skillHelpers.js";
@@ -15,10 +18,10 @@ describe("Skill API", () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
-  afterAll(() => {
+  after(() => {
     process.env = originalEnv;
   });
 
@@ -55,7 +58,7 @@ describe("Skill API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(skillModel, "getAllSkills").mockImplementation(() => {
+      mock.method(skillModel, "getAllSkills", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -106,7 +109,7 @@ describe("Skill API", () => {
     } )
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(skillModel, "createSkill").mockImplementation(() => {
+      mock.method(skillModel, "createSkill", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -124,6 +127,7 @@ describe("Skill API", () => {
     it("should return 200 if skill updated", async () => {
       const res = await patchSkill(1)
       expect(res.status).toBe(200)
+      expect(res.body.message).toBe("Skill updated successfully")
     })
 
     it("should return 400 if invalid input", async () => {
@@ -161,7 +165,7 @@ describe("Skill API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(skillModel, "patchSkillById").mockImplementation(() => {
+      mock.method(skillModel, "patchSkillById", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -213,7 +217,7 @@ describe("Skill API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(skillModel, "deleteSkillById").mockImplementation(() => {
+      mock.method(skillModel, "deleteSkillById", () => {
         throw new Error("Simulated Server Error");
       });
 

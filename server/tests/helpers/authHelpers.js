@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../app";
+import app from "../../app.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv";

@@ -1,5 +1,5 @@
-import { educationModel } from "../models/educationModel";
-import { formatDateFields } from "./helpers";
+import { educationModel } from "../models/educationModel.js";
+import { formatDateFields } from "./helpers.js";
 
 export async function getAllEducation(ctx) {
   try {

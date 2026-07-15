@@ -1,3 +1,6 @@
+import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { resetDatabase, seedExperiences, seedExperience } from "./helpers/dbHelpers.js";
 import { experienceModel } from "../models/experienceModel.js";
 import { getExperiences, createExperience, patchExperience, deleteExperience } from "./helpers/experienceHelpers.js";
@@ -15,10 +18,10 @@ describe("Experience API", () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
-  afterAll(() => {
+  after(() => {
     process.env = originalEnv;
   });
 
@@ -59,7 +62,7 @@ describe("Experience API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(experienceModel, "getAllExperiences").mockImplementation(() => {
+      mock.method(experienceModel, "getAllExperiences", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -110,7 +113,7 @@ describe("Experience API", () => {
     } )
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(experienceModel, "createExperience").mockImplementation(() => {
+      mock.method(experienceModel, "createExperience", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -165,7 +168,7 @@ describe("Experience API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(experienceModel, "patchExperienceById").mockImplementation(() => {
+      mock.method(experienceModel, "patchExperienceById", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -217,7 +220,7 @@ describe("Experience API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(experienceModel, "deleteExperienceById").mockImplementation(() => {
+      mock.method(experienceModel, "deleteExperienceById", () => {
         throw new Error("Simulated Server Error");
       });
 

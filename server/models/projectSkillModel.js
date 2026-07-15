@@ -6,9 +6,9 @@ async function getProjectSkillsByProjectId(projectId) {
 }
 
 async function createProjectSkill(projectId, skillId) {
-  const query = "INSERT INTO cases (project_id, skillId) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;"
+  const query = "INSERT INTO project_skills (project_id, skill_id) VALUES ($1, $2) RETURNING *;"
   const result = await runQuery(query, [projectId, skillId])
-  return result[0].id
+  return result[0]
 }
 
 async function patchProjectSkill(id, updates) {
@@ -26,8 +26,8 @@ async function patchProjectSkill(id, updates) {
   return result[0]
 }
 
-async function deleteProjectSkill(id) {
-  const result = await runQuery("DELETE FROM project_skills WHERE id = $1 RETURNING id", [id]);
+async function deleteProjectSkillsByProjectId(id) {
+  const result = await runQuery("DELETE FROM project_skills WHERE project_id = $1 RETURNING project_id", [id]);
   return result[0]
 }
 
@@ -35,5 +35,5 @@ export const projectSkillModel = {
   getProjectSkillsByProjectId,
   createProjectSkill,
   patchProjectSkill,
-  deleteProjectSkill
+  deleteProjectSkillsByProjectId
 };

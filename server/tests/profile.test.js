@@ -1,3 +1,6 @@
+import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
+import { expect } from 'expect';
+
 import { resetDatabase, seedProfile } from "./helpers/dbHelpers.js";
 import { profileModel } from "../models/profileModel.js";
 import { getProfile, patchProfile } from "./helpers/profileHelpers.js";
@@ -16,10 +19,10 @@ describe("Profile API", () => {
   })
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    mock.restoreAll();
   });
 
-  afterAll(() => {
+  after(() => {
     process.env = originalEnv;
   });
 
@@ -53,7 +56,7 @@ describe("Profile API", () => {
     })
 
     it("should return 500 if database error", async () => {
-      jest.spyOn(profileModel, "getProfile").mockImplementation(() => {
+      mock.method(profileModel, "getProfile", () => {
         throw new Error("Simulated Server Error");
       });
 
@@ -102,7 +105,7 @@ describe("Profile API", () => {
       } )
 
       it("should return 500 if database error", async () => {
-        jest.spyOn(profileModel, "patchProfile").mockImplementation(() => {
+        mock.method(profileModel, "patchProfile", () => {
           throw new Error("Simulated Server Error");
         });
 

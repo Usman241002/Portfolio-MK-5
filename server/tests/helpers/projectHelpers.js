@@ -43,6 +43,10 @@ export async function getProjects() {
   return await request(app.callback()).get("/api/projects")
 }
 
+export async function getFeaturedProjects() {
+  return await request(app.callback()).get("/api/projects/featured")
+}
+
 export async function createProject(payload = validProjectPayload, token = validToken) {
   return await request(app.callback()).post("/api/projects").send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }

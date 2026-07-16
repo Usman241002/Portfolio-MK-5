@@ -187,6 +187,144 @@ export async function seedProject() {
   `);
 }
 
+export async function seedFeaturedProjects() {
+  await runQuery(`
+    INSERT INTO projects (
+      title,
+      subtitle,
+      client,
+      role,
+      year,
+      description,
+      status,
+      repository_url,
+      live_demo_url,
+      thumbnail_url,
+      featured
+    ) VALUES
+    (
+      'Customer Relationship Platform',
+      'CRM for sales and customer management',
+      'Northbridge Solutions',
+      'Backend Developer',
+      2026,
+      'A CRM platform enabling businesses to manage customers, sales opportunities, communications and reporting.',
+      'completed',
+      'https://github.com/example/crm-platform',
+      'https://crm.example.com',
+      'https://picsum.photos/600/400?201',
+      TRUE
+    ),
+    (
+      'Healthcare Appointment System',
+      'Online patient booking platform',
+      'MediCare Services',
+      'Full Stack Developer',
+      2025,
+      'A secure appointment scheduling system with patient records, doctor availability and automated reminders.',
+      'completed',
+      'https://github.com/example/healthcare-system',
+      'https://health.example.com',
+      'https://picsum.photos/600/400?202',
+      TRUE
+    ),
+    (
+      'Fleet Management Dashboard',
+      'Vehicle tracking and maintenance',
+      'Transit Logistics',
+      'Software Engineer',
+      2024,
+      'A dashboard for monitoring fleet vehicles, maintenance schedules, fuel usage and driver activity.',
+      'completed',
+      'https://github.com/example/fleet-dashboard',
+      'https://fleet.example.com',
+      'https://picsum.photos/600/400?203',
+      TRUE
+    );
+  `);
+
+  await runQuery(`
+    INSERT INTO cases (
+      project_id,
+      heading,
+      subheading,
+      description,
+      stat,
+      stat_description,
+      image_url
+    ) VALUES
+      (
+        1,
+        'Challenge',
+        'Customer data spread across systems',
+        'Sales teams relied on multiple spreadsheets and disconnected tools, making it difficult to track leads and customer interactions.',
+        '45%',
+        'Faster lead management',
+        'https://picsum.photos/800/500?211'
+      ),
+      (
+        1,
+        'Solution',
+        'Centralised CRM',
+        'Developed a secure CRM with lead tracking, customer profiles, activity history and sales reporting.',
+        '8k+',
+        'Customer records',
+        'https://picsum.photos/800/500?212'
+      ),
+
+      (
+        2,
+        'Challenge',
+        'Manual appointment scheduling',
+        'Patients booked appointments by phone, resulting in double bookings and long waiting times.',
+        '55%',
+        'Reduction in booking errors',
+        'https://picsum.photos/800/500?221'
+      ),
+      (
+        2,
+        'Outcome',
+        'Self-service booking',
+        'Implemented online appointment booking, automated reminders and doctor availability management.',
+        '15k+',
+        'Appointments scheduled',
+        'https://picsum.photos/800/500?222'
+      ),
+
+      (
+        3,
+        'Challenge',
+        'Difficult fleet monitoring',
+        'Vehicle maintenance schedules and driver records were managed manually, leading to missed servicing.',
+        '30%',
+        'Lower maintenance costs',
+        'https://picsum.photos/800/500?231'
+      ),
+      (
+        3,
+        'Solution',
+        'Fleet operations dashboard',
+        'Created dashboards for vehicle status, maintenance reminders, fuel usage and driver performance.',
+        '250+',
+        'Vehicles managed',
+        'https://picsum.photos/800/500?232'
+      );
+  `);
+
+  await runQuery(`
+    INSERT INTO project_skills (project_id, skill_id) VALUES
+      (1,1),
+      (1,2),
+      (1,3),
+
+      (2,1),
+      (2,3),
+
+      (3,2),
+      (3,3)
+  `);
+}
+
 export async function seedEducations() {
   await runQuery(`
     INSERT INTO education (

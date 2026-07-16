@@ -35,9 +35,9 @@ describe("Experience API", () => {
 
       expect(res.status).toBe(200)
       expect(res.body.message).toBe("Experience fetched successfully")
-      expect(res.body.experience).toBeDefined()
-      expect(res.body.experience.length).toEqual(3)
-      expect(res.body.experience).toEqual(
+      expect(res.body.experiences).toBeDefined()
+      expect(res.body.experiences.length).toEqual(3)
+      expect(res.body.experiences).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             start_date: expect.any(String),

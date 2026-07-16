@@ -1,11 +1,11 @@
 import { beforeEach, afterEach, after, describe, it, mock } from "node:test"
 import { expect } from 'expect';
 
-import { resetDatabase, seedProject, seedProjects, seedSkills } from "./helpers/dbHelpers.js";
+import { resetDatabase, seedProject, seedProjects, seedFeaturedProjects, seedSkills } from "./helpers/dbHelpers.js";
 import { projectModel } from "../models/projectModel.js";
 import { caseModel } from "../models/caseModel.js";
 import { projectSkillModel } from "../models/projectSkillModel.js";
-import { getProjects, createProject, getProject, patchProject, deleteProject, validProjectPayload } from "./helpers/projectHelpers.js";
+import { getProjects, getFeaturedProjects, createProject, getProject, patchProject, deleteProject, validProjectPayload } from "./helpers/projectHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -114,6 +114,113 @@ describe("Project API", () => {
       });
 
       const res = await getProjects();
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Failed to fetch projects");
+    });
+  });
+
+  describe.only("GET /api/projects/featured", () => {
+    beforeEach(async () => {
+      await seedSkills();
+      await seedFeaturedProjects();
+    })
+
+    it("should return 200 if projects fetched", async () => {
+      const res = await getFeaturedProjects()
+
+      expect(res.status).toBe(200)
+      expect(res.body.message).toBe("Projects fetched successfully")
+      expect(res.body.projects).toBeDefined()
+      expect(res.body.projects.length).toEqual(3)
+      expect(res.body.projects).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(Number),
+            title: expect.any(String),
+            subtitle: expect.any(String),
+            client: expect.any(String),
+            role: expect.any(String),
+            year: expect.any(Number),
+            description: expect.any(String),
+            status: expect.any(String),
+            repository_url: expect.any(String),
+            live_demo_url: expect.anything(),
+            thumbnail_url: expect.anything(),
+            deleted: expect.any(Boolean),
+            featured: expect.any(Boolean),
+            skills: expect.arrayContaining([
+              expect.objectContaining({
+                project_id: expect.any(Number),
+                skill_id: expect.any(Number),
+              })
+            ]),
+            cases: expect.arrayContaining([
+              expect.objectContaining({
+                id: expect.any(Number),
+                project_id: expect.any(Number),
+                heading: expect.any(String),
+                subheading: expect.any(String),
+                description: expect.any(String),
+                stat: expect.any(String),
+                stat_description: expect.any(String),
+                image_url: expect.any(String)
+              })
+            ]),
+          })
+        ])
+      );
+    })
+
+    it("should only fetch featured projects", async () => {
+      const res = await getFeaturedProjects()
+
+      expect(res.status).toBe(200)
+      expect(res.body.projects).toBeDefined()
+      expect(res.body.projects.length).toEqual(3)
+      expect(res.body.projects).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            featured: true
+          })
+        ])
+      );
+    })
+
+    it("should return 404 if no projects are found", async () => {
+      await resetDatabase();
+
+      const res = await getFeaturedProjects()
+
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe("No projects found")
+    })
+
+    it("should return 500 if database error while fetching projects", async () => {
+      mock.method(projectModel, "getFeaturedProjects", () => {
+        throw new Error("Simulated Server Error");
+      });
+
+      const res = await getFeaturedProjects();
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Failed to fetch projects");
+    });
+
+    it("should return 500 if database error while fetching skills", async () => {
+      mock.method(projectSkillModel, "getProjectSkillsByProjectId", () => {
+        throw new Error("Simulated Server Error");
+      });
+
+      const res = await getFeaturedProjects();
+      expect(res.status).toBe(500);
+      expect(res.body.message).toBe("Failed to fetch projects");
+    });
+
+    it("should return 500 if database error while fetching cases", async () => {
+      mock.method(caseModel, "getCasesByProjectId", () => {
+        throw new Error("Simulated Server Error");
+      });
+
+      const res = await getFeaturedProjects();
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to fetch projects");
     });

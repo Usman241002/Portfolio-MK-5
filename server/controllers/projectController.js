@@ -39,6 +39,43 @@ export const getProjects = async (ctx) => {
   }
 };
 
+export const getFeaturedProjects = async (ctx) => {
+  try {
+    const projects = await projectModel.getFeaturedProjects()
+
+    if (projects.length === 0) {
+      ctx.status = 404
+      ctx.body = {
+        message: "No projects found"
+      }
+      return
+    }
+
+    const populatedProjects = await Promise.all(
+      projects.map(async (project) => {
+        const skills = await projectSkillModel.getProjectSkillsByProjectId(project.id);
+        const cases = await caseModel.getCasesByProjectId(project.id);
+
+        return {
+          ...project,
+          skills,
+          cases
+        };
+      })
+    );
+
+    ctx.status = 200
+    ctx.body = {
+      message: "Projects fetched successfully",
+      projects: populatedProjects
+    }
+  } catch (error) {
+    console.error(error);
+    ctx.status = 500;
+    ctx.body = { message: "Failed to fetch projects" };
+  }
+};
+
 export const createProject = async (ctx) => {
   try {
     const { skills, cases, ...projectData } = ctx.request.body;

@@ -5,6 +5,11 @@ async function getAllProjects() {
   return result
 }
 
+async function getFeaturedProjects() {
+  const result = await runQuery("SELECT * FROM projects WHERE deleted = false AND featured = true");
+  return result
+}
+
 async function createProject({ title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url }) {
    const query = "INSERT INTO projects (title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id;"
    const result = await runQuery(query, [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url])
@@ -38,6 +43,7 @@ async function deleteProjectById(id) {
 
 export const projectModel = {
   getAllProjects,
+  getFeaturedProjects,
   createProject,
   getProjectById,
   patchProjectById,

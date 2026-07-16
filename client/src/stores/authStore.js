@@ -1,0 +1,90 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { API_URL } from '@/config'
+
+const useAuthStore = defineStore('auth', () => {
+  const loading = ref(false)
+  const token = ref(null)
+
+  const isLoggedIn = computed(() => !!token.value)
+
+  function setUser(tokenData) {
+    token.value = tokenData
+
+    localStorage.setItem(
+      'auth',
+      JSON.stringify({
+        token: token.value,
+      }),
+    )
+  }
+
+  async function login(formState) {
+    try {
+      loading.value = true
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formState),
+      })
+      const data = await response.json()
+      if (!response.ok) {
+        throw Error(data.message || 'Login failed')
+      }
+
+      setUser(data.token)
+
+      return data
+    } catch (error) {
+      console.error(error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function verifyToken() {
+    try {
+      console.log('TRIGGER')
+      const response = await fetch(`${API_URL}/api/auth/verify`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Invalid token')
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  function logout() {
+    token.value = null
+
+    localStorage.removeItem('auth')
+  }
+
+  function hydrate() {
+    const stored = localStorage.getItem('auth')
+
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        token.value = parsed.token
+      } catch (error) {
+        console.error('Error hydrating auth state:', error)
+        localStorage.removeItem('auth')
+      }
+    }
+  }
+
+  hydrate()
+
+  return { token, isLoggedIn, setUser, login, verifyToken, logout }
+})
+
+export default useAuthStore

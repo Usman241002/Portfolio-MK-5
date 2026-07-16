@@ -14,7 +14,7 @@ export async function getExperiences(ctx) {
     ctx.status = 200;
     ctx.body = {
       message: "Experience fetched successfully",
-      experience: experience.map(formatDateFields)
+      experiences: experience.map(formatDateFields)
     }
   } catch (error) {
     console.error(error);

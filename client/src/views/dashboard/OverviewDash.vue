@@ -7,10 +7,10 @@ import Header from '@/components/dashboard/Header.vue'
 import BaseButton from '@/components/portfolio/BaseButton.vue'
 import ProjectsTable from '@/components/dashboard/ProjectsTable.vue'
 import StatCard from '@/components/dashboard/StatCard.vue'
-import useprojectStore from '@/stores/projectStore.js'
+import useProjectStore from '@/stores/projectStore.js'
 import ProjectModal from '@/components/dashboard/ProjectModal.vue'
 
-const projectStore = useprojectStore()
+const projectStore = useProjectStore()
 
 const isModalVisible = ref(false)
 

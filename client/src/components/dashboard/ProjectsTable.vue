@@ -2,12 +2,12 @@
 import { ref, onMounted } from 'vue'
 import { Flex, Button } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
-import useprojectStore from '@/stores/projectStore.js'
+import useProjectStore from '@/stores/projectStore.js'
 import dayjs from 'dayjs'
 
 import ProjectModal from './ProjectModal.vue'
 
-const projectStore = useprojectStore()
+const projectStore = useProjectStore()
 
 const isModalVisible = ref(false)
 const selectedProject = ref(null)
@@ -23,11 +23,11 @@ const openEditModal = (project) => {
 }
 
 async function onDelete(id) {
-  await projectStore.deleteProject(id)
+  await projectStore.deleteProjectById(id)
 }
 
-async function onFavourite(project) {
-  await projectStore.toggleFavourite(project)
+async function onFeatured(project) {
+  await projectStore.toggleFeatured(project)
 }
 </script>
 
@@ -47,7 +47,7 @@ async function onFavourite(project) {
         <tr v-for="project in projectStore.projects" :key="project.id">
           <td>{{ project.id }}</td>
           <td>{{ project.title }}</td>
-          <td>{{ dayjs(project.year).format('YYYY') }}</td>
+          <td>{{ project.year }}</td>
           <td>{{ project.status }}</td>
           <td>
             <Flex gap="8">
@@ -69,14 +69,14 @@ async function onFavourite(project) {
                 <CloseOutlined />
               </Button>
               <Button
-                @click="onFavourite(project)"
+                @click="onFeatured(project)"
                 type="text"
                 shape="circle"
                 :style="{color: '#F5A623'}"
                 ghost
               >
                 <!-- Fix: Use v-if/v-else instead of JSX interpolation -->
-                <StarFilled v-if="project.favourite" />
+                <StarFilled v-if="project.featured" />
                 <StarOutlined v-else />
               </Button>
             </Flex>

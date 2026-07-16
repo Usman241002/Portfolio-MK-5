@@ -10,7 +10,6 @@ const useAuthStore = defineStore('auth', () => {
 
   function setUser(tokenData) {
     token.value = tokenData
-
     localStorage.setItem(
       'auth',
       JSON.stringify({
@@ -33,7 +32,6 @@ const useAuthStore = defineStore('auth', () => {
       if (!response.ok) {
         throw Error(data.message || 'Login failed')
       }
-
       setUser(data.token)
 
       return data

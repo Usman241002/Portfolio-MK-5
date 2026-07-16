@@ -30,8 +30,14 @@ const passwordVisible = ref(false)
 async function onSubmit(formState) {
   try {
     await auth.login(formState)
-    router.push('/dashboard')
+
+    if (auth.isLoggedIn) {
+      router.push('/dashboard')
+    } else {
+      message.error('Invalid username or password')
+    }
   } catch (error) {
+    message.error('An unexpected error occurred')
     console.error(error)
   }
 }

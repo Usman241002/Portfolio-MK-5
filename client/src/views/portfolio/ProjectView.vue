@@ -18,7 +18,7 @@ const project = ref(null)
 const projectId = route.params.id
 
 onMounted(async () => {
-  project.value = await projectStore.getProjectById(projectId)
+  project.value = await projectStore.fetchProjectById(projectId)
 })
 
 const properties = computed(() => {
@@ -116,6 +116,8 @@ const properties = computed(() => {
 .hero h5 {
   font: var(--body);
   color: var(--text-secondary);
+  letter-spacing: var(--heading-md-tracking);
+
 }
 
 .property-name {

@@ -22,7 +22,7 @@ const useProjectStore = defineStore("projects", () => {
       repository_url: '',
       live_demo_url: '',
       thumbnail: null,
-      skill_ids: [],
+      skills: [], // Note: Changed to skills to match your UI component
       cases: [],
     })
   const currentProject = ref(getEmptyProject())
@@ -81,9 +81,128 @@ const useProjectStore = defineStore("projects", () => {
     try {
       loading.value = true
 
+      // 1. Separate the thumbnail from the normal data
+      const { thumbnail, ...payload } = currentProject.value
+
+      // 2. Send JSON request first
+      const response = await api(`${API_URL}/api/projects`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json', // Back to clean JSON!
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create project')
+      }
+
+      const projectId = data.projectId || data.project?.id
+      let finalProject = data.project || { ...payload, id: projectId }
+
+      // 3. Upload thumbnail separately if it's a new File
+      if (thumbnail instanceof File) {
+        const imageForm = new FormData()
+        imageForm.append('thumbnail', thumbnail)
+
+        const imageResponse = await api(`${API_URL}/api/projects/${projectId}/thumbnail`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+            // No Content-Type header for FormData!
+          },
+          body: imageForm,
+        })
+
+        const imageData = await imageResponse.json()
+        if (!imageResponse.ok) throw new Error(imageData.message || 'Failed to upload thumbnail')
+
+        if (imageData.thumbnail) {
+          finalProject.thumbnail = imageData.thumbnail
+        }
+      }
+
+      // Update local UI
+      projects.value.push(finalProject)
+      return data
 
     } catch(error) {
       console.error(error)
+      throw error // Let the modal catch it
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updateProjectById() {
+    try {
+      loading.value = true
+      const id = currentProject.value.id
+
+      // 1. Separate the thumbnail from the normal data
+      const { thumbnail, ...payload } = currentProject.value
+
+      // If user clicked "remove", tell the backend via a flag in the JSON
+      if (thumbnail === null) {
+        payload.remove_thumbnail = true
+      }
+
+      // 2. Send JSON request first
+      const response = await api(`${API_URL}/api/projects/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json', // Back to clean JSON!
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update project')
+      }
+
+      let finalProject = data.project || { ...currentProject.value }
+
+      // 3. Upload thumbnail separately if it's a new File
+      if (thumbnail instanceof File) {
+        const imageForm = new FormData()
+        imageForm.append('thumbnail', thumbnail)
+
+        const imageResponse = await api(`${API_URL}/api/projects/${id}/thumbnail`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authStore.token}`,
+            // No Content-Type header for FormData!
+          },
+          body: imageForm,
+        })
+
+        const imageData = await imageResponse.json()
+        if (!imageResponse.ok) throw new Error(imageData.message || 'Failed to upload thumbnail')
+
+        if (imageData.thumbnail) {
+          finalProject.thumbnail = imageData.thumbnail
+        }
+      } else if (thumbnail === null) {
+        finalProject.thumbnail = null
+      }
+
+      // Update local UI
+      const index = projects.value.findIndex((p) => p.id === id)
+      if (index !== -1) {
+        projects.value[index] = finalProject
+      }
+
+      return data
+
+    } catch(error) {
+      console.error(error)
+      throw error // Let the modal catch it
     } finally {
       loading.value = false
     }
@@ -124,18 +243,6 @@ const useProjectStore = defineStore("projects", () => {
       }
 
     } catch (error) {
-      console.error(error)
-    } finally {
-      loading.value = false
-    }
-  }
-
-  async function updateProjectById() {
-    try {
-      loading.value = true
-
-
-    } catch(error) {
       console.error(error)
     } finally {
       loading.value = false

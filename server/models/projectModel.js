@@ -10,10 +10,10 @@ async function getFeaturedProjects() {
   return result
 }
 
-async function createProject({ title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url }) {
-   const query = "INSERT INTO projects (title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id;"
-   const result = await runQuery(query, [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url])
-   return result[0].id
+async function createProject({ title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured = false }) {
+  const query = "INSERT INTO projects (title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id;"
+  const result = await runQuery(query, [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured])
+  return result[0].id
 }
 
 async function getProjectById(id) {
@@ -21,23 +21,22 @@ async function getProjectById(id) {
   return result[0]
 }
 
-async function putProjectById(id, updates) {
-  const keys = Object.keys(updates)
-  const values = Object.values(updates)
-
-  if (keys.length === 0) {
-   throw new Error("No update fields provided.");
-  }
-
-  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE projects SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
-
-  const result = await runQuery(query, [...values, id])
+async function putProjectById(id, data) {
+  const { title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured, deleted } = data
+  const result = await runQuery(
+    "UPDATE projects SET title = $1, subtitle = $2, client = $3, role = $4, year = $5, description = $6, status = $7, repository_url = $8, live_demo_url = $9, featured = $10, deleted = $11 WHERE id = $12 RETURNING *",
+    [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured, deleted, id]
+  )
   return result[0]
 }
 
 async function deleteProjectById(id) {
   const result = await runQuery("UPDATE projects SET deleted = true WHERE id = $1 RETURNING id", [id]);
+  return result[0]
+}
+
+async function updateThumbnail(id, thumbnailUrl) {
+  const result = await runQuery("UPDATE projects SET thumbnail_url = $1 WHERE id = $2 RETURNING *", [thumbnailUrl, id])
   return result[0]
 }
 
@@ -47,5 +46,6 @@ export const projectModel = {
   createProject,
   getProjectById,
   putProjectById,
-  deleteProjectById
+  deleteProjectById,
+  updateThumbnail
 };

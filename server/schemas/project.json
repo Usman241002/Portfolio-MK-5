@@ -1,21 +1,22 @@
 {
-  "definitions" : {
-    "getProjects" : {
-      "id" : "getProjects",
+  "definitions": {
+    "getProjects": {
+      "id": "getProjects",
       "type": "object",
       "properties": {},
       "required": [],
-      "additionalProperties" : false
+      "additionalProperties": false
     },
-    "createProject" : {
-      "id" : "createProject",
+    "createProject": {
+      "id": "createProject",
       "type": "object",
       "properties": {
+        "id": { "type": ["integer", "string", "null"] },
         "title": { "type": "string", "minLength": 4 },
         "subtitle": { "type": "string" },
         "client": { "type": "string", "minLength": 4 },
         "role": { "type": "string", "minLength": 4 },
-        "year": { "type": "integer" },
+        "year": { "type": ["integer", "string"] },
         "description": { "type": "string", "minLength": 4 },
         "status": { "type": "string", "enum": ["ongoing", "completed", "archived"] },
         "repository_url": { "type": ["string", "null"] },
@@ -25,53 +26,60 @@
         "featured": { "type": "boolean" },
         "skills": {
           "type": "array",
-          "items": { "type": "integer" }
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": ["integer", "string"] }
+            },
+            "required": ["id"],
+            "additionalProperties": false
+          }
         },
         "cases": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
+              "id": { "type": ["integer", "string", "null"] },
+              "project_id": { "type": ["integer", "string", "null"] },
               "heading": { "type": "string" },
               "subheading": { "type": "string" },
               "description": { "type": "string" },
               "stat": { "type": "string" },
               "stat_description": { "type": "string" },
-              "image_url": { "type": "string" }
+              "image_url": { "type": ["string", "null"] }
             },
             "required": ["heading", "subheading", "description"],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         }
       },
       "required": ["title", "client", "role", "year", "description"],
-      "additionalProperties" : false
+      "additionalProperties": false
     },
-    "getProject" : {
-      "id" : "getProject",
+    "getProject": {
+      "id": "getProject",
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "pattern": "^[1-9][0-9]*$"
+          "type": ["string", "integer"]
         }
       },
       "required": ["id"],
-      "additionalProperties" : false
+      "additionalProperties": false
     },
-    "putProject" : {
-      "id" : "putProject",
+    "putProject": {
+      "id": "putProject",
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "pattern": "^[1-9][0-9]*$"
+          "type": ["string", "integer"]
         },
         "title": { "type": "string", "minLength": 4 },
         "subtitle": { "type": "string" },
         "client": { "type": "string", "minLength": 4 },
         "role": { "type": "string", "minLength": 4 },
-        "year": { "type": "integer" },
+        "year": { "type": ["integer", "string"] },
         "description": { "type": "string", "minLength": 4 },
         "status": { "type": "string", "enum": ["ongoing", "completed", "archived"] },
         "repository_url": { "type": ["string", "null"] },
@@ -81,39 +89,47 @@
         "featured": { "type": "boolean" },
         "skills": {
           "type": "array",
-          "items": { "type": "integer" }
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": ["integer", "string"] }
+            },
+            "required": ["id"],
+            "additionalProperties": true
+          }
         },
         "cases": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
+              "id": { "type": ["integer", "string", "null"] },
+              "project_id": { "type": ["integer", "string", "null"] },
               "heading": { "type": "string" },
               "subheading": { "type": "string" },
               "description": { "type": "string" },
               "stat": { "type": "string" },
               "stat_description": { "type": "string" },
-              "image_url": { "type": "string" }
+              "image_url": { "type": ["string", "null"] }
             },
             "required": ["heading", "subheading", "description"],
-            "additionalProperties": false
+            "additionalProperties": true
           }
         }
       },
       "required": [],
-      "additionalProperties" : false
+      "additionalProperties": false
     },
-    "deleteProject" : {
-      "id" : "deleteProject",
+    "deleteProject": {
+      "id": "deleteProject",
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "pattern": "^[1-9][0-9]*$"
+          "type": ["string", "integer"]
         }
       },
       "required": ["id"],
-      "additionalProperties" : false
+      "additionalProperties": false
     }
   }
 }

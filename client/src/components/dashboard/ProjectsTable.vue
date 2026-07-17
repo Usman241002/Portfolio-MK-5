@@ -3,8 +3,8 @@ import { ref, onMounted } from 'vue'
 import { Flex, Button, message } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
 import useProjectStore from '@/stores/projectStore.js'
-import dayjs from 'dayjs'
 
+import BaseButton from '@/components/portfolio/BaseButton.vue'
 import ProjectModal from './ProjectModal.vue'
 
 const projectStore = useProjectStore()
@@ -15,6 +15,12 @@ const selectedProject = ref(null)
 onMounted(async () => {
   await projectStore.fetchProjects()
 })
+
+function openCreateModal() {
+  projectStore.resetCurrentProject()
+  selectedProject.value = projectStore.currentProject
+  isModalVisible.value = true
+}
 
 const openEditModal = (project) => {
   projectStore.setCurrentProject(project)
@@ -27,7 +33,7 @@ async function onDelete(id) {
     await projectStore.deleteProjectById(id)
     message.success('Project deleted')
   } catch (error) {
-    message.error(error)
+    message.error(error.message)
   }
 }
 
@@ -36,12 +42,16 @@ async function onFeatured(project) {
     await projectStore.toggleFeatured(project)
     message.success(`${project.title}: Featured status updated`)
   } catch (error) {
-    message.error(error)
+    message.error(error.message || 'Failed to update featured status')
   }
 }
 </script>
 
 <template>
+  <Teleport to="#header-actions" defer>
+    <BaseButton @click="openCreateModal">Add Project</BaseButton>
+  </Teleport>
+
   <Flex vertical>
     <table>
       <thead>
@@ -61,11 +71,11 @@ async function onFeatured(project) {
           <td>{{ project.status }}</td>
           <td>
             <Flex gap="8">
+              <!-- 3. FIXED: Removed "ghost" prop from text buttons to fix console warnings -->
               <Button
                 @click="openEditModal(project)"
                 type="text"
                 shape="circle"
-                ghost
               >
                 <EditOutlined />
               </Button>
@@ -73,7 +83,6 @@ async function onFeatured(project) {
                 @click="onDelete(project.id)"
                 type="text"
                 shape="circle"
-                ghost
                 danger
               >
                 <CloseOutlined />
@@ -83,9 +92,7 @@ async function onFeatured(project) {
                 type="text"
                 shape="circle"
                 :style="{color: '#F5A623'}"
-                ghost
               >
-                <!-- Fix: Use v-if/v-else instead of JSX interpolation -->
                 <StarFilled v-if="project.featured" />
                 <StarOutlined v-else />
               </Button>

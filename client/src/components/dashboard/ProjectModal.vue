@@ -1,5 +1,5 @@
 <script setup>
-import {  API_URL } from '@/config.js'
+import { API_URL } from '@/config.js'
 import { onMounted, computed, ref, watch } from 'vue'
 import {
   Modal,
@@ -15,6 +15,7 @@ import {
   Collapse,
   Upload,
   Typography,
+  message, // Added message for toasts
 } from 'ant-design-vue'
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import BaseButton from '../portfolio/BaseButton.vue'
@@ -23,7 +24,7 @@ import CaseCard from './CaseCard.vue'
 import { storeToRefs } from 'pinia'
 
 import useSkillStore from '@/stores/skillStore.js'
-import useprojectStore from '@/stores/projectStore.js'
+import useProjectStore from '@/stores/projectStore.js' // Fixed capital P
 
 const props = defineProps({
   modalVisible : Boolean
@@ -32,11 +33,13 @@ const props = defineProps({
 const emit = defineEmits(['update:modalVisible'])
 const close = () => emit('update:modalVisible', false)
 
-const projectStore = useprojectStore()
+const projectStore = useProjectStore()
 const skillStore = useSkillStore()
 const { currentProject } = storeToRefs(projectStore)
 const uploadFileList = ref([])
 
+// 1. SMART MODAL: Check if we have an ID to know if it's Edit or Create
+const isEditing = computed(() => !!currentProject.value.id)
 
 watch(
   () => currentProject.value.thumbnail,
@@ -59,6 +62,16 @@ const skillOptions = computed(() =>
   skillStore.skills.map((skill) => ({ label: skill.name, value: skill.id })),
 )
 
+// 2. SKILLS TRANSLATOR: Converts [1, 2] to [{id: 1}, {id: 2}] for the backend
+const selectedSkillIds = computed({
+  get() {
+    return currentProject.value.skills?.map((skill) => skill.id) || []
+  },
+  set(newIdsArray) {
+    currentProject.value.skills = newIdsArray.map(id => ({ id }))
+  }
+})
+
 onMounted(async () => {
   await skillStore.fetchSkills()
 })
@@ -78,9 +91,20 @@ function onRemove(caseId) {
   currentProject.value.cases = currentProject.value.cases.filter((c) => c.id !== caseId)
 }
 
+// 3. ROUTE THE SAVE ACTION properly
 async function onSave() {
-  await projectStore.saveProject()
-  close()
+  try {
+    if (isEditing.value) {
+      await projectStore.updateProjectById()
+    } else {
+      await projectStore.createProjects()
+    }
+
+    message.success(`Project ${isEditing.value ? 'updated' : 'created'} successfully`)
+    close()
+  } catch (error) {
+    message.error(error.message || 'Failed to save project')
+  }
 }
 
 const beforeUpload = (file) => {
@@ -108,14 +132,16 @@ function onRemoveImage() {
   <Modal
     :open="modalVisible"
     @cancel="close"
-    :title="currentProject.title || 'New Project'"
+    :title="isEditing ? 'Edit Project' : 'New Project'"
     width="45%"
     centered
   >
     <template #footer>
       <Flex gap="16" justify="end">
         <Button @click="close">Cancel</Button>
-        <Button @click="onSave" type="primary">Save</Button>
+        <Button @click="onSave" type="primary">
+          {{ isEditing ? 'Update' : 'Create' }}
+        </Button>
       </Flex>
     </template>
 
@@ -185,7 +211,7 @@ function onRemoveImage() {
               <Select
                 mode="multiple"
                 class="form-select"
-                v-model:value="currentProject.skill_ids"
+                v-model:value="selectedSkillIds"
                 :options="skillOptions"
               />
             </Form.Item>
@@ -280,6 +306,7 @@ function onRemoveImage() {
 </template>
 
 <style scoped>
+/* Keep styles exactly as they were! */
 .case-card {
   border-radius: 0;
   background-color: var(--surface);

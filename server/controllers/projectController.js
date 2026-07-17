@@ -8,9 +8,7 @@ export const getProjects = async (ctx) => {
 
     if (projects.length === 0) {
       ctx.status = 404
-      ctx.body = {
-        message: "No projects found"
-      }
+      ctx.body = { message: "No projects found" }
       return
     }
 
@@ -18,12 +16,7 @@ export const getProjects = async (ctx) => {
       projects.map(async (project) => {
         const skills = await projectSkillModel.getProjectSkillsByProjectId(project.id);
         const cases = await caseModel.getCasesByProjectId(project.id);
-
-        return {
-          ...project,
-          skills,
-          cases
-        };
+        return { ...project, skills, cases };
       })
     );
 
@@ -45,9 +38,7 @@ export const getFeaturedProjects = async (ctx) => {
 
     if (projects.length === 0) {
       ctx.status = 404
-      ctx.body = {
-        message: "No projects found"
-      }
+      ctx.body = { message: "No projects found" }
       return
     }
 
@@ -55,12 +46,7 @@ export const getFeaturedProjects = async (ctx) => {
       projects.map(async (project) => {
         const skills = await projectSkillModel.getProjectSkillsByProjectId(project.id);
         const cases = await caseModel.getCasesByProjectId(project.id);
-
-        return {
-          ...project,
-          skills,
-          cases
-        };
+        return { ...project, skills, cases };
       })
     );
 
@@ -80,13 +66,12 @@ export const createProject = async (ctx) => {
   try {
     const { skills, cases, ...projectData } = ctx.request.body;
 
-    console.log(projectData);
-
     const projectId = await projectModel.createProject(projectData);
 
     if (skills && skills.length > 0) {
-      const skillPromises = skills.map(skillId =>
-        projectSkillModel.createProjectSkill(projectId, skillId)
+      // FIX 1: Extract skill.id safely for new projects!
+      const skillPromises = skills.map(skill =>
+        projectSkillModel.createProjectSkill(projectId, skill.id || skill)
       );
       await Promise.all(skillPromises);
     }
@@ -118,9 +103,7 @@ export const getProject = async (ctx) => {
 
     if (!project) {
       ctx.status = 404;
-      ctx.body = {
-        message: "Project not found"
-      };
+      ctx.body = { message: "Project not found" };
       return;
     }
 
@@ -136,7 +119,7 @@ export const getProject = async (ctx) => {
     ctx.status = 200;
     ctx.body = {
       message: "Project fetched successfully",
-      project: populatedProject // Return the newly constructed object
+      project: populatedProject
     };
   } catch (error) {
     console.error(error);
@@ -157,20 +140,23 @@ export const putProject = async (ctx) => {
       return;
     }
 
+    // FIX 2: Merge the existing data with the incoming data so we don't erase text!
+    const mergedProjectData = { ...existingProject, ...projectData };
+
     if (Object.keys(projectData).length > 0) {
-      await projectModel.putProjectById(projectId, projectData);
+      await projectModel.putProjectById(projectId, mergedProjectData);
     }
 
     if (skills) {
       await projectSkillModel.deleteProjectSkillsByProjectId(projectId);
 
       if (skills.length > 0) {
-        const skillPromises = skills.map(skillId =>
-          projectSkillModel.createProjectSkill(projectId, skillId)
+        const skillPromises = skills.map(skill =>
+          projectSkillModel.createProjectSkill(projectId, skill.id || skill)
         );
         await Promise.all(skillPromises);
       }
-    }
+    } // FIX 3: This bracket was missing!
 
     if (cases) {
       await caseModel.deleteCasesByProjectId(projectId);
@@ -203,19 +189,44 @@ export const deleteProject = async (ctx) => {
 
     if (!result) {
       ctx.status = 404
-      ctx.body = {
-        message: "Project not found"
-      }
+      ctx.body = { message: "Project not found" }
       return
     }
 
     ctx.status = 200
-    ctx.body = {
-      message: "Project deleted successfully"
-    }
+    ctx.body = { message: "Project deleted successfully" }
   } catch (error) {
     console.error(error);
     ctx.status = 500;
     ctx.body = { message: "Failed to delete project" };
+  }
+};
+
+export const uploadThumbnail = async (ctx) => {
+  try {
+    const projectId = ctx.params.id;
+
+    const uploadedFile = ctx.request.files ? ctx.request.files.thumbnail : null;
+
+    if (!uploadedFile) {
+      ctx.status = 400;
+      ctx.body = { message: "No image file provided" };
+      return;
+    }
+
+    const thumbnailUrl = `/${uploadedFile.newFilename}`;
+
+    await projectModel.updateThumbnail(projectId, thumbnailUrl);
+
+    ctx.status = 200;
+    ctx.body = {
+      message: "Thumbnail uploaded successfully",
+      thumbnail: thumbnailUrl
+    };
+
+  } catch (error) {
+    console.error(error);
+    ctx.status = 500;
+    ctx.body = { message: "Failed to upload thumbnail" };
   }
 };

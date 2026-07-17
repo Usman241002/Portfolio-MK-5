@@ -4,10 +4,10 @@ import { jwtMiddleware } from "../middleware/auth.js";
 import {
   getSkills,
   createSkill,
-  patchSkill,
+  putSkill,
   deleteSkill
 } from "../controllers/skillController.js"
-import { getSkillsValidation, createSkillValidation, patchSkillValidation, deleteSkillValidation } from "../validation/skillValidation.js"
+import { getSkillsValidation, createSkillValidation, putSkillValidation, deleteSkillValidation } from "../validation/skillValidation.js"
 
 const skillRouter = new Router({
   prefix: "/skills",
@@ -17,8 +17,8 @@ const skillRouter = new Router({
 skillRouter.get("/", getSkillsValidation, getSkills)
 // POST /api/skills/
 skillRouter.post("/", createSkillValidation, jwtMiddleware, createSkill)
-// // PATCH /api/skills/:id
-skillRouter.patch("/:id", patchSkillValidation, jwtMiddleware, patchSkill)
+// // PUT /api/skills/:id
+skillRouter.put("/:id", putSkillValidation, jwtMiddleware, putSkill)
 // // DELETE /api/skills/:id
 skillRouter.delete("/:id", deleteSkillValidation, jwtMiddleware, deleteSkill)
 

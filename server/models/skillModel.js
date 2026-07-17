@@ -11,20 +11,12 @@ async function createSkill({name, year}) {
   return result[0].id
 }
 
-async function patchSkillById(id, updates) {
-  const keys = Object.keys(updates)
-  const values = Object.values(updates)
-
-  if (keys.length === 0) {
-   throw new Error("No update fields provided.");
-  }
-
-  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE skills SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
-
-  const result = await runQuery(query, [...values, id])
-  return result[0]
-}
+async function putSkillById(id, data) {
+   const { name, year } = data
+   const query = `UPDATE skills SET name = $1, year = $2 WHERE id = $3 RETURNING *`
+   const result = await runQuery(query, [name, year, id])
+   return result[0]
+ }
 
 async function deleteSkillById(id) {
   const result = await runQuery("DELETE FROM skills WHERE id = $1 RETURNING id", [id]);
@@ -34,6 +26,6 @@ async function deleteSkillById(id) {
 export const skillModel = {
   getAllSkills,
   createSkill,
-  patchSkillById,
+  putSkillById,
   deleteSkillById
 };

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Flex, Button } from 'ant-design-vue'
+import { Flex, Button, message } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import useExperienceStore from '@/stores/experienceStore.js'
 import BaseButton from '../portfolio/BaseButton.vue'
@@ -23,7 +23,12 @@ const openEditModal = (experience) => {
 }
 
 async function onDelete(id) {
-  await experienceStore.deleteExperienceById(id)
+  try {
+    await experienceStore.deleteExperienceById(id)
+    message.success('Experience deleted')
+  } catch (error) {
+    message.error(error)
+  }
 }
 
 function openCreateModal() {
@@ -36,7 +41,7 @@ function openCreateModal() {
 
 <template>
 
-  <Teleport to="#header-actions">
+  <Teleport to="#header-actions" defer>
     <BaseButton @click="openCreateModal">Add Experience</BaseButton>
   </Teleport>
 

@@ -145,7 +145,7 @@ export const getProject = async (ctx) => {
   }
 };
 
-export const patchProject = async (ctx) => {
+export const putProject = async (ctx) => {
   try {
     const projectId = ctx.params.id;
     const { skills, cases, ...projectData } = ctx.request.body;
@@ -158,7 +158,7 @@ export const patchProject = async (ctx) => {
     }
 
     if (Object.keys(projectData).length > 0) {
-      await projectModel.patchProjectById(projectId, projectData);
+      await projectModel.putProjectById(projectId, projectData);
     }
 
     if (skills) {

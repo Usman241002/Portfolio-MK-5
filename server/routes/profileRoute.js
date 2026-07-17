@@ -1,8 +1,8 @@
 import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
 
-import { getProfile, patchProfile } from "../controllers/profileController.js"
-import { getProfileValidation, patchProfileValidation } from "../validation/profileValidation.js"
+import { getProfile, putProfile } from "../controllers/profileController.js"
+import { getProfileValidation, putProfileValidation } from "../validation/profileValidation.js"
 
 const profileRouter = new Router({
   prefix: "/profile",
@@ -10,7 +10,7 @@ const profileRouter = new Router({
 
 // GET /api/profile/
 profileRouter.get("/", getProfileValidation, getProfile)
-// PATCH /api/profile/
-profileRouter.patch("/", patchProfileValidation, jwtMiddleware, patchProfile)
+// PUT /api/profile/
+profileRouter.put("/", putProfileValidation, jwtMiddleware, putProfile)
 
 export default profileRouter;

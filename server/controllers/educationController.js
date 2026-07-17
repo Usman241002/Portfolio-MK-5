@@ -39,12 +39,10 @@ export async function createEducation(ctx) {
   }
 }
 
-export async function patchEducation(ctx) {
+export async function putEducation(ctx) {
   try {
     const educationId = ctx.params.id
-    const updates = ctx.request.body
-
-    const education = await educationModel.patchEducationById(educationId, updates)
+    const education = await educationModel.putEducationById(educationId, ctx.request.body)
 
     if (!education) {
       ctx.status = 404

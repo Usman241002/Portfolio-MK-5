@@ -41,12 +41,10 @@ export async function createSkill(ctx) {
   }
 }
 
-export async function patchSkill(ctx) {
+export async function putSkill(ctx) {
   try {
     const skillId = ctx.params.id
-    const updates = ctx.request.body
-
-    const skill = await skillModel.patchSkillById(skillId, updates)
+    const skill = await skillModel.putSkillById(skillId, ctx.request.body)
 
     if (!skill) {
       ctx.status = 404

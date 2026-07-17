@@ -12,7 +12,7 @@ const useExperienceStore = defineStore("experience", () => {
   const getEmptyExperience = () => ({
     id: Date.now(),
     start_date: '',
-    end_date: '',
+    end_date: null,
     title: '',
     employment_type: 'full-time',
     company: '',
@@ -49,21 +49,62 @@ const useExperienceStore = defineStore("experience", () => {
     try {
       loading.value = true
 
+      const response = await api(`${API_URL}/api/experiences`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentExperience.value),
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create experience')
+      }
+
+      const experienceId = data.experienceId
+      experiences.value.push({...currentExperience.value, id: experienceId})
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
   }
 
-  async function updateExperienceById() {
+  async function updateExperience() {
     try {
       loading.value = true
+      const id = currentExperience.value.id
 
+      const response = await api(`${API_URL}/api/experiences/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentExperience.value),
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update experience')
+      }
+
+      const index = experiences.value.findIndex((e) => e.id === id)
+      if (index !== -1) {
+        experiences.value[index] = data.experience || { ...currentExperience.value }
+      }
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
@@ -98,7 +139,7 @@ const useExperienceStore = defineStore("experience", () => {
       resetCurrentExperience,
       fetchExperiences,
       createExperience,
-      updateExperienceById,
+      updateExperience,
       deleteExperienceById,
     }
 })

@@ -11,7 +11,7 @@ async function createProjectSkill(projectId, skillId) {
   return result[0]
 }
 
-async function patchProjectSkill(id, updates) {
+async function putProjectSkill(id, updates) {
   const keys = Object.keys(updates)
   const values = Object.values(updates)
 
@@ -34,6 +34,6 @@ async function deleteProjectSkillsByProjectId(id) {
 export const projectSkillModel = {
   getProjectSkillsByProjectId,
   createProjectSkill,
-  patchProjectSkill,
+  putProjectSkill,
   deleteProjectSkillsByProjectId
 };

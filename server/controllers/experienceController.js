@@ -39,12 +39,10 @@ export async function createExperience(ctx) {
   }
 }
 
-export async function patchExperience(ctx) {
+export async function putExperience(ctx) {
   try {
     const experienceId = ctx.params.id
-    const updates = ctx.request.body
-
-    const experience = await experienceModel.patchExperienceById(experienceId, updates)
+    const experience = await experienceModel.putExperienceById(experienceId, ctx.request.body)
 
     if (!experience) {
       ctx.status = 404

@@ -3,7 +3,7 @@ import { expect } from 'expect';
 
 import { resetDatabase, seedProfile } from "./helpers/dbHelpers.js";
 import { profileModel } from "../models/profileModel.js";
-import { getProfile, patchProfile } from "./helpers/profileHelpers.js";
+import { getProfile, putProfile } from "./helpers/profileHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -66,9 +66,9 @@ describe("Profile API", () => {
     });
   });
 
-  describe("PATCH /api/profile/", () => {
+  describe("PUT /api/profile/", () => {
       it("should return 200 if profile updated", async () => {
-        const res = await patchProfile()
+        const res = await putProfile()
         expect(res.status).toBe(200)
       })
 
@@ -83,7 +83,7 @@ describe("Profile API", () => {
           linkedin_url: 5678,
         }
 
-        const res = await patchProfile(payload, undefined)
+        const res = await putProfile(payload, undefined)
 
         expect(res.status).toBe(400)
       })
@@ -91,7 +91,7 @@ describe("Profile API", () => {
       it("should return 401 if token is invalid", async () => {
         const token =  jwt.sign({}, "invalid_token");
 
-        const res = await patchProfile(undefined, token)
+        const res = await putProfile(undefined, token)
 
         expect(res.status).toBe(401)
       } )
@@ -99,17 +99,17 @@ describe("Profile API", () => {
       it("should return 401 if token is expired", async () => {
         const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-        const res = await patchProfile(undefined, token)
+        const res = await putProfile(undefined, token)
 
         expect(res.status).toBe(401)
       } )
 
       it("should return 500 if database error", async () => {
-        mock.method(profileModel, "patchProfile", () => {
+        mock.method(profileModel, "putProfile", () => {
           throw new Error("Simulated Server Error");
         });
 
-        const res = await patchProfile();
+        const res = await putProfile();
         expect(res.status).toBe(500);
         expect(res.body.message).toBe("Failed to update profile");
       });

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Flex, Button } from 'ant-design-vue'
+import { Flex, Button, message } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
 import useProjectStore from '@/stores/projectStore.js'
 import dayjs from 'dayjs'
@@ -18,16 +18,26 @@ onMounted(async () => {
 
 const openEditModal = (project) => {
   projectStore.setCurrentProject(project)
-  selectedProject.value = project // Fix: Assign the selected project to the ref
+  selectedProject.value = project
   isModalVisible.value = true
 }
 
 async function onDelete(id) {
-  await projectStore.deleteProjectById(id)
+  try {
+    await projectStore.deleteProjectById(id)
+    message.success('Project deleted')
+  } catch (error) {
+    message.error(error)
+  }
 }
 
 async function onFeatured(project) {
-  await projectStore.toggleFeatured(project)
+  try {
+    await projectStore.toggleFeatured(project)
+    message.success(`${project.title}: Featured status updated`)
+  } catch (error) {
+    message.error(error)
+  }
 }
 </script>
 

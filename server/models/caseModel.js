@@ -13,7 +13,7 @@ async function createCaseByProjectId(projectId, caseData) {
   return result[0].id
 }
 
-async function patchCaseById(id, updates) {
+async function putCaseById(id, updates) {
   const keys = Object.keys(updates)
   const values = Object.values(updates)
 
@@ -36,6 +36,6 @@ async function deleteCasesByProjectId(id) {
 export const caseModel = {
   getCasesByProjectId,
   createCaseByProjectId,
-  patchCaseById,
+  putCaseById,
   deleteCasesByProjectId
 };

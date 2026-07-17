@@ -1,12 +1,12 @@
 import Router from "koa-router";
 import { jwtMiddleware } from "../middleware/auth.js";
 
-import { getProjects, getFeaturedProjects, createProject, getProject, patchProject, deleteProject } from "../controllers/projectController.js"
+import { getProjects, getFeaturedProjects, createProject, getProject, putProject, deleteProject } from "../controllers/projectController.js"
 import {
   getProjectsValidation,
   createProjectValidation,
   getProjectValidation,
-  patchProjectValidation,
+  putProjectValidation,
   deleteProjectValidation
 } from "../validation/projectValidation.js";
 const projectRouter = new Router({
@@ -21,8 +21,8 @@ projectRouter.get("/featured", getProjectsValidation, getFeaturedProjects)
 projectRouter.post("/", createProjectValidation, jwtMiddleware, createProject)
 // GET /api/projects/:id
 projectRouter.get("/:id", getProjectValidation, getProject)
-// PATCH /api/projects/:id
-projectRouter.patch("/:id", patchProjectValidation, jwtMiddleware, patchProject)
+// PUT /api/projects/:id
+projectRouter.put("/:id", putProjectValidation, jwtMiddleware, putProject)
 // DELETE /api/projects/:id
 projectRouter.delete("/:id", deleteProjectValidation, jwtMiddleware, deleteProject)
 

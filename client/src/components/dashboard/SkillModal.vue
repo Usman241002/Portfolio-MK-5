@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import {
   Modal,
   Flex,
@@ -10,8 +10,11 @@ import {
   Input,
   DatePicker,
   Button,
+  message,
 } from 'ant-design-vue'
 import Subtitle from '../portfolio/Subtitle.vue'
+
+import useSkillStore from '@/stores/skillStore.js'
 
 const props = defineProps({
   modalVisible: Boolean,
@@ -24,13 +27,14 @@ const props = defineProps({
 const emit = defineEmits(['update:modalVisible', 'save'])
 const close = () => emit('update:modalVisible', false)
 
+const skillStore = useSkillStore()
+
 const formData = ref({})
 const formRef = ref(null)
 
 watch(
   () => props.skill,
   (newVal) => {
-    // FIX: Convert the year to a string so the DatePicker doesn't throw a type error
     formData.value = newVal
       ? { ...newVal, year: newVal.year ? String(newVal.year) : undefined }
       : {}
@@ -38,20 +42,34 @@ watch(
   { immediate: true }
 )
 
+const isEditing = computed(() => {
+  if (!formData.value.id) return false
+  return skillStore.skills.some((s) => s.id === formData.value.id)
+})
+
 async function onSave() {
   try {
     await formRef.value.validate()
 
-    // Convert the year back to a number before saving to keep your database types clean
     const payload = {
       ...formData.value,
       year: Number(formData.value.year)
     }
 
-    emit('save', payload)
+    skillStore.setCurrentSkill(payload)
+
+    if (isEditing.value) {
+      await skillStore.updateSkill()
+    } else {
+      await skillStore.createSkill()
+    }
+
+    message.success(`Skill ${isEditing.value ? 'updated' : 'created'} successfully`)
+
+    emit('save')
     close()
   } catch (error) {
-    console.error('Validation failed:', error)
+    message.error(error)
   }
 }
 
@@ -79,14 +97,16 @@ const rules = {
   <Modal
     :open="modalVisible"
     @cancel="close"
-    :title="skill?.name || 'New Skill'"
+    :title="isEditing ? 'Edit Skill' : 'New Skill'"
     width="45%"
     centered
   >
     <template #footer>
       <Flex gap="16" justify="end">
         <Button @click="close">Cancel</Button>
-        <Button @click="onSave" type="primary" :disabled="!skill">Save</Button>
+        <Button @click="onSave" type="primary" :disabled="!skill">
+          {{ isEditing ? 'Update' : 'Create' }}
+        </Button>
       </Flex>
     </template>
 

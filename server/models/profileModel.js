@@ -5,7 +5,7 @@ async function getProfile() {
   return result[0]
 }
 
-async function patchProfile(updates) {
+async function putProfile(updates) {
   const keys = Object.keys(updates)
   const values = Object.values(updates)
 
@@ -22,5 +22,5 @@ async function patchProfile(updates) {
 
 export const profileModel = {
   getProfile,
-  patchProfile
+  putProfile
 };

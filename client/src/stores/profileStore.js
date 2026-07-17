@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
 import { API_URL } from '@/config.js'
 import { ref } from 'vue'
+import { api } from '@/router/fetch.js' // Added your custom API wrapper
 import useAuthStore from './authStore.js'
 
-const useProfileStore = defineStore("Profile", () => {
+const useProfileStore = defineStore("profile", () => {
   const authStore = useAuthStore()
   const loading = ref(false)
-  const profile = ref([])
+
+  const profile = ref({})
 
   async function fetchProfile() {
     try {
@@ -14,7 +16,7 @@ const useProfileStore = defineStore("Profile", () => {
       const response = await fetch(`${API_URL}/api/profile`)
       const data = await response.json()
       if (!response.ok) throw new Error(data.message || 'Failed to fetch profile')
-      profile.value = data.profile
+      profile.value = data.profile || {}
     } catch(error) {
       console.error(error)
     } finally {
@@ -22,13 +24,26 @@ const useProfileStore = defineStore("Profile", () => {
     }
   }
 
-  async function updateProfile() {
+  async function updateProfile(payload) {
     try {
       loading.value = true
+      const response = await api(`${API_URL}/api/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authStore.token}`,
+        },
+        body: JSON.stringify(payload),
+      })
 
+      const data = await response.json()
 
+      if (!response.ok) throw new Error(data.message || 'Failed to update profile')
+
+      profile.value = data.profile
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }

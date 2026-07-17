@@ -11,18 +11,10 @@ async function createEducation({ start_date, end_date, title, company, location,
    return result[0].id
 }
 
- async function patchEducationById(id, updates) {
-   const keys = Object.keys(updates)
-   const values = Object.values(updates)
-
-   if (keys.length === 0) {
-    throw new Error("No update fields provided.");
-   }
-
-   const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-   const query = `UPDATE education SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
-
-   const result = await runQuery(query, [...values, id])
+async function putEducationById(id, data) {
+   const { start_date, end_date, title, company, location, description } = data
+   const query = `UPDATE education SET start_date = $1, end_date = $2, title = $3, company = $4, location = $5, description = $6 WHERE id = $7 RETURNING *`
+   const result = await runQuery(query, [start_date, end_date, title, company, location, description, id])
    return result[0]
  }
 
@@ -34,6 +26,6 @@ async function deleteEducationById(id) {
 export const educationModel = {
   getAllEducation,
   createEducation,
-  patchEducationById,
+  putEducationById,
   deleteEducationById
 };

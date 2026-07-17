@@ -3,7 +3,7 @@ import { expect } from 'expect';
 
 import { resetDatabase, seedSkill, seedSkills } from "./helpers/dbHelpers.js";
 import { skillModel } from "../models/skillModel.js";
-import { getSkills, createSkill, patchSkill, deleteSkill } from "./helpers/skillHelpers.js";
+import { getSkills, createSkill, putSkill, deleteSkill } from "./helpers/skillHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -119,13 +119,13 @@ describe("Skill API", () => {
     });
   })
 
-  describe("PATCH /api/skills/:id", () => {
+  describe("PUT /api/skills/:id", () => {
     beforeEach(async () => {
       await seedSkill()
     })
 
     it("should return 200 if skill updated", async () => {
-      const res = await patchSkill(1)
+      const res = await putSkill(1)
       expect(res.status).toBe(200)
       expect(res.body.message).toBe("Skill updated successfully")
     })
@@ -136,7 +136,7 @@ describe("Skill API", () => {
         year: "string"
       }
 
-      const res = await patchSkill("number", payload, undefined)
+      const res = await putSkill("number", payload, undefined)
 
       expect(res.status).toBe(400)
     })
@@ -144,7 +144,7 @@ describe("Skill API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await patchSkill(1, undefined, token)
+      const res = await putSkill(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
@@ -152,24 +152,24 @@ describe("Skill API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await patchSkill(1, undefined, token)
+      const res = await putSkill(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
 
     it("should return 404 if skill not found", async () => {
-      const res = await patchSkill(999)
+      const res = await putSkill(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Skill not found")
     })
 
     it("should return 500 if database error", async () => {
-      mock.method(skillModel, "patchSkillById", () => {
+      mock.method(skillModel, "putSkillById", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchSkill(1);
+      const res = await putSkill(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update skill");
     });

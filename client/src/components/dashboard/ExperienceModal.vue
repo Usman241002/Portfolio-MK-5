@@ -11,6 +11,7 @@ import {
   Select,
   DatePicker,
   Button,
+  message,
 } from 'ant-design-vue'
 import Subtitle from '../portfolio/Subtitle.vue'
 import useExperienceStore from '@/stores/experienceStore.js'
@@ -51,15 +52,16 @@ async function onSave() {
     experienceStore.setCurrentExperience(formData.value)
 
     if (isEditing.value) {
-      await experienceStore.updateExperienceById()
+      await experienceStore.updateExperience()
     } else {
       await experienceStore.createExperience()
     }
 
+    message.success(`Experience ${isEditing.value ? 'updated' : 'created'} successfully`)
     emit('save')
     close()
   } catch (error) {
-    console.error('Validation failed:', error)
+    message.error(error)
   }
 }
 

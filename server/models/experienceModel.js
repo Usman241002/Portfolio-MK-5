@@ -11,20 +11,12 @@ async function createExperience({ start_date, end_date, title, company, employme
    return result[0].id
 }
 
-async function patchExperienceById(id, updates) {
-  const keys = Object.keys(updates)
-  const values = Object.values(updates)
-
-  if (keys.length === 0) {
-   throw new Error("No update fields provided.");
-  }
-
-  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE experiences SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
-
-  const result = await runQuery(query, [...values, id])
-  return result[0]
-}
+async function putExperienceById(id, data) {
+   const { start_date, end_date, title, company, employment_type, location, description } = data
+   const query = `UPDATE experience SET start_date = $1, end_date = $2, title = $3, company = $4, employment_type = $5, location = $6, description = $7 WHERE id = $8 RETURNING *`
+   const result = await runQuery(query, [start_date, end_date, title, company, employment_type, location, description, id])
+   return result[0]
+ }
 
 async function deleteExperienceById(id) {
   const result = await runQuery("DELETE FROM experiences WHERE id = $1 RETURNING id", [id]);
@@ -34,6 +26,6 @@ async function deleteExperienceById(id) {
 export const experienceModel = {
   getAllExperiences,
   createExperience,
-  patchExperienceById,
+  putExperienceById,
   deleteExperienceById
 };

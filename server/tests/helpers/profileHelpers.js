@@ -16,6 +16,6 @@ export async function getProfile() {
   return await request(app.callback()).get("/api/profile")
 }
 
-export async function patchProfile(payload = validProfilePayload, token = validToken) {
-  return await request(app.callback()).patch(`/api/profile`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
+export async function putProfile(payload = validProfilePayload, token = validToken) {
+  return await request(app.callback()).put(`/api/profile`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }

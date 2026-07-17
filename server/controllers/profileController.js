@@ -23,11 +23,9 @@ export async function getProfile(ctx) {
   }
 }
 
-export async function patchProfile(ctx) {
+export async function putProfile(ctx) {
   try {
-    const updates = ctx.request.body
-
-    const updatedProfile = await profileModel.patchProfile(updates)
+    const updatedProfile = await profileModel.putProfile(ctx.request.body)
 
     if (!updatedProfile) {
       ctx.status = 404

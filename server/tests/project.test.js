@@ -5,7 +5,7 @@ import { resetDatabase, seedProject, seedProjects, seedFeaturedProjects, seedSki
 import { projectModel } from "../models/projectModel.js";
 import { caseModel } from "../models/caseModel.js";
 import { projectSkillModel } from "../models/projectSkillModel.js";
-import { getProjects, getFeaturedProjects, createProject, getProject, patchProject, deleteProject, validProjectPayload } from "./helpers/projectHelpers.js";
+import { getProjects, getFeaturedProjects, createProject, getProject, putProject, deleteProject, validProjectPayload } from "./helpers/projectHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -382,14 +382,14 @@ describe("Project API", () => {
     });
   });
 
-  describe("PATCH /api/projects/:id", () => {
+  describe("PUT /api/projects/:id", () => {
     beforeEach(async () => {
       await seedSkills()
       await seedProject()
     })
 
     it("should return 200 if project updated", async () => {
-      const res = await patchProject(1)
+      const res = await putProject(1)
       expect(res.status).toBe(200)
       expect(res.body.message).toBe("Project updated successfully")
     })
@@ -400,7 +400,7 @@ describe("Project API", () => {
         year: "string"
       }
 
-      const res = await patchProject("number", payload, undefined)
+      const res = await putProject("number", payload, undefined)
 
       expect(res.status).toBe(400)
     })
@@ -408,7 +408,7 @@ describe("Project API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await patchProject(1, undefined, token)
+      const res = await putProject(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
@@ -416,24 +416,24 @@ describe("Project API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await patchProject(1, undefined, token)
+      const res = await putProject(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
 
     it("should return 404 if project not found", async () => {
-      const res = await patchProject(999)
+      const res = await putProject(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Project not found")
     })
 
     it("should return 500 if database error while updating projects", async () => {
-      mock.method(projectModel, "patchProjectById", () => {
+      mock.method(projectModel, "putProjectById", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchProject(1);
+      const res = await putProject(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update project");
     });
@@ -443,7 +443,7 @@ describe("Project API", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchProject(1);
+      const res = await putProject(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update project");
     });
@@ -453,7 +453,7 @@ describe("Project API", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchProject(1);
+      const res = await putProject(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update project");
     });

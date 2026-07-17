@@ -46,7 +46,7 @@ app.use(
 
       return validOrigins[0];
     },
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "PUT", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -54,7 +54,7 @@ app.use(
 app.use(
   koaBody({
     multipart: true,
-    parsedMethods: ["POST", "PUT", "PATCH", "DELETE"],
+    parsedMethods: ["POST", "PUT", "PUT", "DELETE"],
     formidable: {
       uploadDir: uploadDir, // folder where files will be saved
       keepExtensions: true, // keeps extensions

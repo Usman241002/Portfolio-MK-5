@@ -55,8 +55,8 @@ export async function getProject(id) {
   return await request(app.callback()).get(`/api/projects/${id}`)
 }
 
-export async function patchProject(id, payload = validProjectPayload, token = validToken) {
-  return await request(app.callback()).patch(`/api/projects/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
+export async function putProject(id, payload = validProjectPayload, token = validToken) {
+  return await request(app.callback()).put(`/api/projects/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
 export async function deleteProject(id, token = validToken) {

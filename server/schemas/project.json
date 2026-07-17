@@ -59,8 +59,8 @@
       "required": ["id"],
       "additionalProperties" : false
     },
-    "patchProject" : {
-      "id" : "patchProject",
+    "putProject" : {
+      "id" : "putProject",
       "type": "object",
       "properties": {
         "id": {

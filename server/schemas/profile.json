@@ -7,8 +7,8 @@
       "required": [],
       "additionalProperties": false
     },
-    "patchProfile": {
-      "id": "patchProfile",
+    "putProfile": {
+      "id": "putProfile",
       "type": "object",
       "properties": {
         "name": {

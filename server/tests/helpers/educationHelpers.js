@@ -20,8 +20,8 @@ export async function createEducation(payload = validEducationPayload, token = v
   return await request(app.callback()).post("/api/education").send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
-export async function patchEducation(id, payload = validEducationPayload, token = validToken) {
-  return await request(app.callback()).patch(`/api/education/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
+export async function putEducation(id, payload = validEducationPayload, token = validToken) {
+  return await request(app.callback()).put(`/api/education/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
 export async function deleteEducation(id, token = validToken) {

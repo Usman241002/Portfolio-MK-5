@@ -21,7 +21,7 @@ async function getProjectById(id) {
   return result[0]
 }
 
-async function patchProjectById(id, updates) {
+async function putProjectById(id, updates) {
   const keys = Object.keys(updates)
   const values = Object.values(updates)
 
@@ -46,6 +46,6 @@ export const projectModel = {
   getFeaturedProjects,
   createProject,
   getProjectById,
-  patchProjectById,
+  putProjectById,
   deleteProjectById
 };

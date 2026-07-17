@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Flex, Button } from 'ant-design-vue'
+import { Flex, Button, message } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import BaseButton from '@/components/portfolio/BaseButton.vue'
 
@@ -24,7 +24,12 @@ const openEditModal = (education) => {
 }
 
 async function onDelete(id) {
-  await educationStore.deleteEducationById(id)
+  try {
+    await educationStore.deleteEducationById(id)
+    message.success('Education deleted')
+  } catch (error) {
+    message.error(error)
+  }
 }
 
 function openCreateModal() {
@@ -36,7 +41,7 @@ function openCreateModal() {
 </script>
 
 <template>
-<Teleport to="#header-actions">
+<Teleport to="#header-actions" defer>
   <BaseButton @click="openCreateModal">Add Education</BaseButton>
 </Teleport>
 

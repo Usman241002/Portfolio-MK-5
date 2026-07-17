@@ -12,20 +12,21 @@ const useEducationStore = defineStore("education", () => {
   const getEmptyEducation = () => ({
     id: Date.now(),
     start_date: '',
-    end_date: '',
+    end_date: null,
     title: '',
     company: '',
     location: '',
     description: '',
   })
+
   const currentEducation = ref(getEmptyEducation())
 
   function resetCurrentEducation() {
     currentEducation.value = getEmptyEducation()
   }
 
-  function setCurrentEducation(education) {
-    currentEducation.value = JSON.parse(JSON.stringify(education))
+  function setCurrentEducation(educationObj) {
+    currentEducation.value = JSON.parse(JSON.stringify(educationObj))
   }
 
   async function fetchEducation() {
@@ -46,21 +47,62 @@ const useEducationStore = defineStore("education", () => {
     try {
       loading.value = true
 
+      const response = await api(`${API_URL}/api/education`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentEducation.value),
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create education')
+      }
+
+      const newEdu = data.education || data
+      education.value.push(newEdu)
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
   }
 
-  async function updateEducationById() {
+  async function updateEducation() {
     try {
       loading.value = true
+      const id = currentEducation.value.id
 
+      const response = await api(`${API_URL}/api/education/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentEducation.value),
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update education')
+      }
+
+      const index = education.value.findIndex((e) => e.id === id)
+      if (index !== -1) {
+        education.value[index] = data.education || { ...currentEducation.value }
+      }
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
@@ -95,9 +137,9 @@ const useEducationStore = defineStore("education", () => {
     resetCurrentEducation,
     fetchEducation,
     createEducation,
-    updateEducationById,
+    updateEducation,
     deleteEducationById,
-    }
+  }
 })
 
 export default useEducationStore

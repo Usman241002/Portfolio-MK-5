@@ -3,7 +3,7 @@ import { expect } from 'expect';
 
 import { resetDatabase, seedEducations, seedEducation } from "./helpers/dbHelpers.js";
 import { educationModel } from "../models/educationModel.js";
-import { getAllEducation, createEducation, patchEducation, deleteEducation } from "./helpers/educationHelpers.js";
+import { getAllEducation, createEducation, putEducation, deleteEducation } from "./helpers/educationHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -122,13 +122,13 @@ describe("Education API", () => {
     });
   })
 
-  describe("PATCH /api/education/:id", () => {
+  describe("PUT /api/education/:id", () => {
     beforeEach(async () => {
       await seedEducation()
     })
 
     it("should return 200 if education updated", async () => {
-      const res = await patchEducation(1)
+      const res = await putEducation(1)
       expect(res.status).toBe(200)
     })
 
@@ -138,7 +138,7 @@ describe("Education API", () => {
         year: "string"
       }
 
-      const res = await patchEducation("number", payload, undefined)
+      const res = await putEducation("number", payload, undefined)
 
       expect(res.status).toBe(400)
     })
@@ -146,7 +146,7 @@ describe("Education API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await patchEducation(1, undefined, token)
+      const res = await putEducation(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
@@ -154,24 +154,24 @@ describe("Education API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await patchEducation(1, undefined, token)
+      const res = await putEducation(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
 
     it("should return 404 if education not found", async () => {
-      const res = await patchEducation(999)
+      const res = await putEducation(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Education not found")
     })
 
     it("should return 500 if database error", async () => {
-      mock.method(educationModel, "patchEducationById", () => {
+      mock.method(educationModel, "putEducationById", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchEducation(1);
+      const res = await putEducation(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update education");
     });

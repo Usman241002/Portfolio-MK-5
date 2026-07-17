@@ -9,6 +9,10 @@
     },
     "createExperience": {
       "properties": {
+        "id": {
+          "type": "number",
+          "minimum": 1
+        },
         "start_date": {
           "type": "string",
           "format": "date"
@@ -47,11 +51,11 @@
           "maxLength": 65535
         }
       },
-      "required": ["start_date", "end_date", "title", "company", "location", "description"],
+      "required": ["id", "start_date", "end_date", "title", "company", "location", "description"],
       "additionalProperties": false
     },
-    "patchExperience": {
-      "id": "patchExperience",
+    "putExperience": {
+      "id": "putExperience",
       "type": "object",
       "properties": {
         "id": {

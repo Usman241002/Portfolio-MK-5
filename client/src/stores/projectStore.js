@@ -101,7 +101,7 @@ const useProjectStore = defineStore("projects", () => {
       }
 
       const response = await api(`${API_URL}/api/projects/${project.id}`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${authStore.token}`,

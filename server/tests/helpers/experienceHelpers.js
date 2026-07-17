@@ -21,8 +21,8 @@ export async function createExperience(payload = validExperiencePayload, token =
   return await request(app.callback()).post("/api/experiences").send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
-export async function patchExperience(id, payload = validExperiencePayload, token = validToken) {
-  return await request(app.callback()).patch(`/api/experiences/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
+export async function putExperience(id, payload = validExperiencePayload, token = validToken) {
+  return await request(app.callback()).put(`/api/experiences/${id}`).send(payload).set("Authorization", token ? `Bearer ${token}` : "")
 }
 
 export async function deleteExperience(id, token = validToken) {

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Flex, Button } from 'ant-design-vue'
+import { Flex, Button, message } from 'ant-design-vue'
 import { EditOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import useSkillStore from '@/stores/skillStore.js'
 
@@ -23,7 +23,12 @@ const openEditModal = (skill) => {
 }
 
 async function onDelete(id) {
-  await skillStore.deleteSkillById(id)
+  try {
+    await skillStore.deleteSkillById(id)
+    message.success('Skill deleted')
+  } catch (error) {
+    message.error(error)
+  }
 }
 
 function openCreateModal() {
@@ -35,7 +40,7 @@ function openCreateModal() {
 </script>
 
 <template>
-  <Teleport to="#header-actions">
+  <Teleport to="#header-actions" defer>
     <BaseButton @click="openCreateModal">Add Skill</BaseButton>
   </Teleport>
 

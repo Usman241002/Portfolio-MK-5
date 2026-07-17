@@ -3,7 +3,7 @@ import { expect } from 'expect';
 
 import { resetDatabase, seedExperiences, seedExperience } from "./helpers/dbHelpers.js";
 import { experienceModel } from "../models/experienceModel.js";
-import { getExperiences, createExperience, patchExperience, deleteExperience } from "./helpers/experienceHelpers.js";
+import { getExperiences, createExperience, putExperience, deleteExperience } from "./helpers/experienceHelpers.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -123,13 +123,13 @@ describe("Experience API", () => {
     });
   })
 
-  describe("PATCH /api/experience/:id", () => {
+  describe("PUT /api/experience/:id", () => {
     beforeEach(async () => {
       await seedExperience()
     })
 
     it("should return 200 if experience updated", async () => {
-      const res = await patchExperience(1)
+      const res = await putExperience(1)
       expect(res.status).toBe(200)
     })
 
@@ -139,7 +139,7 @@ describe("Experience API", () => {
         year: "string"
       }
 
-      const res = await patchExperience("number", payload, undefined)
+      const res = await putExperience("number", payload, undefined)
 
       expect(res.status).toBe(400)
     })
@@ -147,7 +147,7 @@ describe("Experience API", () => {
     it("should return 401 if token is invalid", async () => {
       const token =  jwt.sign({}, "invalid_token");
 
-      const res = await patchExperience(1, undefined, token)
+      const res = await putExperience(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
@@ -155,24 +155,24 @@ describe("Experience API", () => {
     it("should return 401 if token is expired", async () => {
       const token = jwt.sign({}, process.env.JWT_SECRET, { expiresIn: "-1h" });
 
-      const res = await patchExperience(1, undefined, token)
+      const res = await putExperience(1, undefined, token)
 
       expect(res.status).toBe(401)
     } )
 
     it("should return 404 if experience not found", async () => {
-      const res = await patchExperience(999)
+      const res = await putExperience(999)
 
       expect(res.status).toBe(404)
       expect(res.body.message).toBe("Experience not found")
     })
 
     it("should return 500 if database error", async () => {
-      mock.method(experienceModel, "patchExperienceById", () => {
+      mock.method(experienceModel, "putExperienceById", () => {
         throw new Error("Simulated Server Error");
       });
 
-      const res = await patchExperience(1);
+      const res = await putExperience(1);
       expect(res.status).toBe(500);
       expect(res.body.message).toBe("Failed to update experience");
     });

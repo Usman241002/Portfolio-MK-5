@@ -42,21 +42,63 @@ const useSkillStore = defineStore("skill", () => {
     try {
       loading.value = true
 
+      const response = await api(`${API_URL}/api/skills`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentSkill.value),
+      })
 
+      const data = await response.json()
+      console.log(data)
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to create skill')
+      }
+
+      const skillId = data.skillId
+      skills.value.push({...currentSkill.value, id: skillId})
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
   }
 
-  async function updateSkillById() {
+  async function updateSkill() {
     try {
       loading.value = true
+      const id = currentSkill.value.id
 
+      const response = await api(`${API_URL}/api/skills/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(currentSkill.value),
+      })
 
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update skill')
+      }
+
+      const index = skills.value.findIndex((e) => e.id === id)
+      if (index !== -1) {
+        skills.value[index] = data.skill || { ...currentSkill.value }
+      }
+
+      return data
     } catch(error) {
       console.error(error)
+      throw error
     } finally {
       loading.value = false
     }
@@ -96,7 +138,7 @@ const useSkillStore = defineStore("skill", () => {
       resetCurrentSkill,
       fetchSkills,
       createSkill,
-      updateSkillById,
+      updateSkill,
       deleteSkillById,
     }
 })

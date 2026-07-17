@@ -11,6 +11,10 @@
       "id": "createSkill",
       "type": "object",
       "properties": {
+        "id": {
+          "type": "number",
+          "min": 1
+        },
         "name": {
           "type": "string",
           "minLength": 0
@@ -20,11 +24,11 @@
           "min": 2020
         }
       },
-      "required": ["name", "year"],
+      "required": ["id", "name", "year"],
       "additionalProperties": false
     },
-    "patchSkill": {
-      "id": "patchSkill",
+    "putSkill": {
+      "id": "putSkill",
       "type": "object",
       "properties": {
         "id": {

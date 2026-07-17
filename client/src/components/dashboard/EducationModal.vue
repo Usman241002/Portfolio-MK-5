@@ -10,6 +10,7 @@ import {
   Input,
   DatePicker,
   Button,
+  message,
 } from 'ant-design-vue'
 import Subtitle from '../portfolio/Subtitle.vue'
 import useEducationStore from '@/stores/educationStore.js'
@@ -50,15 +51,16 @@ async function onSave() {
     educationStore.setCurrentEducation(formData.value)
 
     if (isEditing.value) {
-      await educationStore.updateEducationById()
+      await educationStore.updateEducation()
     } else {
       await educationStore.createEducation()
     }
 
+    message.success(`Education ${isEditing.value ? 'updated' : 'created'} successfully`)
     emit('save')
     close()
   } catch (error) {
-    console.error('Validation failed:', error)
+    message.error(error)
   }
 }
 

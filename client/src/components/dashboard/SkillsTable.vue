@@ -48,7 +48,6 @@ function openCreateModal() {
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Name</th>
           <th>Year</th>
           <th>Actions</th>
@@ -56,7 +55,6 @@ function openCreateModal() {
       </thead>
       <tbody>
         <tr v-for="skill in skillStore.skills" :key="skill.id">
-          <td>{{ skill.id }}</td>
           <td>{{ skill.name }}</td>
           <td>{{ skill.year }}</td>
 

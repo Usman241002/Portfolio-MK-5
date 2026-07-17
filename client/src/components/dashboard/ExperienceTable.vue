@@ -49,7 +49,6 @@ function openCreateModal() {
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Title</th>
           <th>Company</th>
           <th>Location</th>
@@ -58,7 +57,6 @@ function openCreateModal() {
       </thead>
       <tbody>
         <tr v-for="experience in experienceStore.experiences" :key="experience.id">
-          <td>{{ experience.id }}</td>
           <td>{{ experience.title }}</td>
           <td>{{ experience.company }}</td>
           <td>{{ experience.location }}</td>

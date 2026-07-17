@@ -49,7 +49,6 @@ function openCreateModal() {
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Title</th>
           <th>Company</th>
           <th>Location</th>
@@ -58,7 +57,6 @@ function openCreateModal() {
       </thead>
       <tbody>
         <tr v-for="education in educationStore.education" :key="education.id">
-          <td>{{ education.id }}</td>
           <td>{{ education.title }}</td>
           <td>{{ education.company }}</td>
           <td>{{ education.location }}</td>

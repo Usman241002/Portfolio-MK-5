@@ -56,7 +56,6 @@ async function onFeatured(project) {
     <table>
       <thead>
         <tr>
-          <th>#</th>
           <th>Project</th>
           <th>Year</th>
           <th>Status</th>
@@ -65,7 +64,6 @@ async function onFeatured(project) {
       </thead>
       <tbody>
         <tr v-for="project in projectStore.projects" :key="project.id">
-          <td>{{ project.id }}</td>
           <td>{{ project.title }}</td>
           <td>{{ project.year }}</td>
           <td>{{ project.status }}</td>

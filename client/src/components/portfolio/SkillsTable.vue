@@ -6,6 +6,14 @@ import useSkillStore from '@/stores/skillStore.js'
 const skillStore = useSkillStore()
 const { skills } = storeToRefs(skillStore)
 
+function getExperienceText(startYear) {
+  const years = new Date().getFullYear() - startYear;
+
+  if (years === 0) return '< 1 year';
+  if (years === 1) return '1 year';
+  return `${years} years`;
+}
+
 onMounted(async () => {
   await skillStore.fetchSkills()
 })
@@ -16,7 +24,7 @@ onMounted(async () => {
     <div v-for="skill in skills" :key="skill.name" class="skill-row">
       <span class="skill-name">{{ skill.name }}</span>
       <span class="skill-years">
-        {{ new Date().getFullYear() - skill.year }} year{{ new Date().getFullYear() - skill.year !== 1 ? 's' : '' }}
+        {{ getExperienceText(skill.year) }}
       </span>
     </div>
   </div>

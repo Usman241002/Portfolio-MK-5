@@ -1,6 +1,6 @@
-import router from '@/router'
-import useAuthStore from '@/stores/authStore'
-import { pinia } from '@/main'
+import router from '@/router/index.js'
+import useAuthStore from '@/stores/authStore.js'
+import { pinia } from '@/main.js'
 
 export async function api(url, options = {}) {
   const response = await fetch(url, options)

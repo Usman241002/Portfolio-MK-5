@@ -1,12 +1,28 @@
 import { defineStore } from 'pinia'
 import { API_URL } from '@/config.js'
 import { ref } from 'vue'
+import { api } from '@/router/fetch.js'
 import useAuthStore from './authStore.js'
 
 const useSkillStore = defineStore("skill", () => {
-  const authStore = useAuthStore
+  const authStore = useAuthStore()
   const loading = ref(false)
   const skills = ref([])
+
+  const getEmptySkill = () => ({
+    id: Date.now(),
+    name: '',
+    year: new Date().getFullYear()
+  })
+  const currentSkill = ref(getEmptySkill())
+
+  function resetCurrentSkill() {
+    currentSkill.value = getEmptySkill()
+  }
+
+  function setCurrentSkill(skill) {
+    currentSkill.value = JSON.parse(JSON.stringify(skill))
+  }
 
   async function fetchSkills() {
     try {
@@ -34,7 +50,7 @@ const useSkillStore = defineStore("skill", () => {
     }
   }
 
-  async function updateSkill() {
+  async function updateSkillById() {
     try {
       loading.value = true
 
@@ -46,11 +62,25 @@ const useSkillStore = defineStore("skill", () => {
     }
   }
 
-  async function deleteSkill() {
+  async function deleteSkillById(id) {
     try {
       loading.value = true
+      const response = await api(`${API_URL}/api/skills/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+          'Content-Type': 'application/json',
+        },
+      })
 
+      const data = await response.json()
 
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to delete skill')
+      }
+
+      skills.value = skills.value.filter((skill) => skill.id !== id)
+      return data
     } catch (error) {
       console.error(error)
     } finally {
@@ -61,10 +91,13 @@ const useSkillStore = defineStore("skill", () => {
   return {
       loading,
       skills,
+      currentSkill,
+      setCurrentSkill,
+      resetCurrentSkill,
       fetchSkills,
       createSkill,
-      updateSkill,
-      deleteSkill,
+      updateSkillById,
+      deleteSkillById,
     }
 })
 

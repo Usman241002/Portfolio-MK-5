@@ -1,12 +1,33 @@
 import { defineStore } from 'pinia'
 import { API_URL } from '@/config.js'
 import { ref } from 'vue'
+import { api } from '@/router/fetch.js'
 import useAuthStore from './authStore.js'
 
 const useExperienceStore = defineStore("experience", () => {
-  const authStore = useAuthStore
+  const authStore = useAuthStore()
   const loading = ref(false)
   const experiences = ref([])
+
+  const getEmptyExperience = () => ({
+    id: Date.now(),
+    start_date: '',
+    end_date: '',
+    title: '',
+    employment_type: 'full-time',
+    company: '',
+    location: '',
+    description: '',
+  })
+  const currentExperience = ref(getEmptyExperience())
+
+  function resetCurrentExperience() {
+    currentExperience.value = getEmptyExperience()
+  }
+
+  function setCurrentExperience(experience) {
+    currentExperience.value = JSON.parse(JSON.stringify(experience))
+  }
 
   async function fetchExperiences() {
     try {
@@ -36,7 +57,7 @@ const useExperienceStore = defineStore("experience", () => {
     }
   }
 
-  async function updateExperience() {
+  async function updateExperienceById() {
     try {
       loading.value = true
 
@@ -48,11 +69,20 @@ const useExperienceStore = defineStore("experience", () => {
     }
   }
 
-  async function deleteExperience() {
+  async function deleteExperienceById(id) {
     try {
       loading.value = true
+      const response = await api(`${API_URL}/api/experiences/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to delete project')
 
-
+      experiences.value = experiences.value.filter((experiece) => experiece.id !== id)
     } catch (error) {
       console.error(error)
     } finally {
@@ -63,10 +93,13 @@ const useExperienceStore = defineStore("experience", () => {
   return {
       loading,
       experiences,
+      currentExperience,
+      setCurrentExperience,
+      resetCurrentExperience,
       fetchExperiences,
       createExperience,
-      updateExperience,
-      deleteExperience,
+      updateExperienceById,
+      deleteExperienceById,
     }
 })
 

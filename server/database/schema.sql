@@ -80,7 +80,7 @@ CREATE TABLE project_skills (
     CONSTRAINT fk_projectskills_skill
         FOREIGN KEY (skill_id)
         REFERENCES skills(id)
-        ON DELETE RESTRICT
+        ON DELETE CASCADE
 );
 
 -- EDUCATION

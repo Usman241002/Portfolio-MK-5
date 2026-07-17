@@ -9,6 +9,7 @@ const useProjectStore = defineStore("projects", () => {
   const loading = ref(false)
   const projects = ref([])
   const featuredProjects = ref([])
+
   const getEmptyProject = () => ({
       id: null,
       title: '',
@@ -27,8 +28,8 @@ const useProjectStore = defineStore("projects", () => {
   const currentProject = ref(getEmptyProject())
 
   function resetCurrentProject() {
-      currentProject.value = getEmptyProject()
-    }
+    currentProject.value = getEmptyProject()
+  }
 
   function setCurrentProject(project) {
     currentProject.value = JSON.parse(JSON.stringify(project))
@@ -141,11 +142,20 @@ const useProjectStore = defineStore("projects", () => {
     }
   }
 
-  async function deleteProjectById() {
+  async function deleteProjectById(id) {
     try {
       loading.value = true
+      const response = await api(`${API_URL}/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to delete project')
 
-
+      projects.value = projects.value.filter((project) => project.id !== id)
     } catch (error) {
       console.error(error)
     } finally {
@@ -154,20 +164,20 @@ const useProjectStore = defineStore("projects", () => {
   }
 
   return {
-      loading,
-      projects,
-      featuredProjects,
-      currentProject,
-      setCurrentProject,
-      resetCurrentProject,
-      fetchProjects,
-      fetchFeaturedProjects,
-      createProjects,
-      toggleFeatured,
-      fetchProjectById,
-      updateProjectById,
-      deleteProjectById,
-    }
+    loading,
+    projects,
+    featuredProjects,
+    currentProject,
+    setCurrentProject,
+    resetCurrentProject,
+    fetchProjects,
+    fetchFeaturedProjects,
+    createProjects,
+    toggleFeatured,
+    fetchProjectById,
+    updateProjectById,
+    deleteProjectById,
+  }
 })
 
 export default useProjectStore

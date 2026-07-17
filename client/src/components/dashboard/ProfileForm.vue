@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { Flex, Row, Col, Form, Input, Divider, Select } from 'ant-design-vue'
+import BaseButton from '../portfolio/BaseButton.vue'
 import Subtitle from '@/components/portfolio/Subtitle.vue'
 import useProfileStore from '@/stores/profileStore.js'
 
@@ -9,6 +10,10 @@ const profileStore = useProfileStore()
 onMounted(async () => {
   await profileStore.fetchProfile()
 })
+
+async function onSaveChanges() {
+  await profileStore.updateProfile()
+}
 
 const rules = {
   name: [
@@ -34,6 +39,10 @@ const rules = {
 </script>
 
 <template>
+  <Teleport to="#header-actions">
+    <BaseButton @click="onSaveChanges">Save Changes</BaseButton>
+  </Teleport>
+
   <Form :model="profileStore.profile" :rules="rules" layout="vertical">
     <Flex vertical>
       <Subtitle>Basic Info</Subtitle>

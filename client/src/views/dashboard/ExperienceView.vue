@@ -1,11 +1,8 @@
 <script setup>
 import { onMounted } from 'vue'
-import { Flex, Divider, Collapse, Button } from 'ant-design-vue'
-import { CloseOutlined } from '@ant-design/icons-vue'
+import { Flex, Divider } from 'ant-design-vue'
 import Subtitle from '@/components/portfolio/Subtitle.vue'
-import ExperienceCard from '@/components/dashboard/ExperienceCard.vue'
-import BaseButton from '@/components/portfolio/BaseButton.vue'
-import dayjs from 'dayjs'
+import ExperienceTable from '@/components/dashboard/ExperienceTable.vue'
 
 import useExperienceStore from '@/stores/experienceStore.js'
 const experienceStore = useExperienceStore()
@@ -14,9 +11,6 @@ onMounted(async () => {
   await experienceStore.fetchExperiences()
 })
 
-function onRemove(id) {
-  experienceStore.removeExperience(id)
-}
 </script>
 
 <template>
@@ -24,45 +18,7 @@ function onRemove(id) {
     <Subtitle>Experience timeline</Subtitle>
     <Divider :style="{ margin: '0.75rem', border: '1px solid var(--border)' }" />
 
-    <Collapse class="timeline-card" :bordered="false">
-      <Collapse.Panel
-        class="timeline-header"
-        :style="{ borderRadius: '0' }"
-        v-for="exp in experienceStore.experiences"
-        :key="exp.id"
-      >
-        <template #header>
-          <Flex justify="space-between" align="start">
-            <p>
-              <span>{{ exp.title }} - </span
-              >{{ exp.start_date == '' ? null : dayjs(exp.start_date).format('MM-YYYY') }} →
-              {{
-                exp.end_date == null || exp.end_date == ''
-                  ? 'Present'
-                  : dayjs(exp.end_date).format('MM-YYYY')
-              }}
-            </p>
-
-            <Button
-              type="primary"
-              ghost
-              danger
-              :style="{ borderRadius: '0' }"
-              @click.stop
-              @click="onRemove(exp.id)"
-            >
-              <CloseOutlined />
-            </Button>
-          </Flex>
-        </template>
-
-        <ExperienceCard :experience="exp" />
-      </Collapse.Panel>
-    </Collapse>
-
-    <Flex justify="start">
-      <BaseButton @click="experienceStore.addExperience"> Add </BaseButton>
-    </Flex>
+    <ExperienceTable />
   </Flex>
 </template>
 

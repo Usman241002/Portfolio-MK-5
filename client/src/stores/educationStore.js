@@ -1,12 +1,32 @@
 import { defineStore } from 'pinia'
 import { API_URL } from '@/config.js'
 import { ref } from 'vue'
+import { api } from '@/router/fetch.js'
 import useAuthStore from './authStore.js'
 
 const useEducationStore = defineStore("education", () => {
-  const authStore = useAuthStore
+  const authStore = useAuthStore()
   const loading = ref(false)
   const education = ref([])
+
+  const getEmptyEducation = () => ({
+    id: Date.now(),
+    start_date: '',
+    end_date: '',
+    title: '',
+    company: '',
+    location: '',
+    description: '',
+  })
+  const currentEducation = ref(getEmptyEducation())
+
+  function resetCurrentEducation() {
+    currentEducation.value = getEmptyEducation()
+  }
+
+  function setCurrentEducation(education) {
+    currentEducation.value = JSON.parse(JSON.stringify(education))
+  }
 
   async function fetchEducation() {
     try {
@@ -34,7 +54,7 @@ const useEducationStore = defineStore("education", () => {
     }
   }
 
-  async function updateEducation() {
+  async function updateEducationById() {
     try {
       loading.value = true
 
@@ -46,11 +66,20 @@ const useEducationStore = defineStore("education", () => {
     }
   }
 
-  async function deleteEducation() {
+  async function deleteEducationById(id) {
     try {
       loading.value = true
+      const response = await api(`${API_URL}/api/education/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Failed to delete project')
 
-
+      education.value = education.value.filter((edu) => edu.id !== id)
     } catch (error) {
       console.error(error)
     } finally {
@@ -59,12 +88,15 @@ const useEducationStore = defineStore("education", () => {
   }
 
   return {
-      loading,
-      education,
-      fetchEducation,
-      createEducation,
-      updateEducation,
-      deleteEducation,
+    loading,
+    education,
+    currentEducation,
+    setCurrentEducation,
+    resetCurrentEducation,
+    fetchEducation,
+    createEducation,
+    updateEducationById,
+    deleteEducationById,
     }
 })
 

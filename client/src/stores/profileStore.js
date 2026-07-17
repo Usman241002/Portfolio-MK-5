@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import useAuthStore from './authStore.js'
 
 const useProfileStore = defineStore("Profile", () => {
-  const authStore = useAuthStore
+  const authStore = useAuthStore()
   const loading = ref(false)
   const profile = ref([])
 

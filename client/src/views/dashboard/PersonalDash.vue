@@ -1,71 +1,74 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Menu } from 'ant-design-vue'
 
 import Header from '@/components/dashboard/Header.vue'
-import BaseButton from '@/components/portfolio/BaseButton.vue'
 
 import SkillsView from './SkillsView.vue'
 import IdentityView from './IdentityView.vue'
 import ExperienceView from './ExperienceView.vue'
 import EducationView from './EducationView.vue'
 
-
-import useProfileStore from '@/stores/profileStore.js'
-import useExperienceStore from '@/stores/experienceStore.js'
-import useEducationStore from '@/stores/educationStore.js'
-
-
-const profileStore = useProfileStore()
-const experienceStore = useExperienceStore()
-const educationStore = useEducationStore()
+const route = useRoute()
+const router = useRouter()
 
 const current = ref(['1'])
 
-const items = [
-  {
-    label: 'Identity',
-    key: '1',
-  },
-  {
-    label: 'Skills',
-    key: '2',
-  },
-  {
-    label: 'Experience',
-    key: '3',
-  },
-  {
-    label: 'Education',
-    key: '4',
-  },
+const tabs = [
+  { key: '1', slug: 'identity',   label: 'Identity',   component: IdentityView },
+  { key: '2', slug: 'skills',     label: 'Skills',     component: SkillsView },
+  { key: '3', slug: 'experience', label: 'Experience', component: ExperienceView },
+  { key: '4', slug: 'education',  label: 'Education',  component: EducationView },
 ]
 
-const views = {
-  '1': IdentityView,
-  '2': SkillsView,
-  '3': ExperienceView,
-  '4': EducationView,
+const menuItems = tabs.map(tab => ({ label: tab.label, key: tab.key }))
+
+const activeComponent = computed(() => {
+  const activeTab = tabs.find(tab => tab.key === current.value[0])
+  return activeTab ? activeTab.component : IdentityView
+})
+
+function syncTab() {
+  const tabQuery = route.query.tab
+  const matchedTab = tabs.find(tab => tab.slug === tabQuery)
+
+  if (matchedTab) {
+    current.value = [matchedTab.key]
+  } else {
+    current.value = ['1']
+  }
 }
 
-const activeComponent = computed(() => views[current.value[0]])
+onMounted(() => {
+  syncTab()
+})
 
-async function onSave() {
-  await profileStore.updateProfile()
-  await experienceStore.updateExperience()
-  await educationStore.updateEducation()
+watch(
+  () => route.query.tab,
+  () => {
+    syncTab()
+  }
+)
+
+function onTabClick({ key }) {
+  const targetTab = tabs.find(tab => tab.key === key)
+  if (targetTab) {
+    router.push({ query: { ...route.query, tab: targetTab.slug } })
+  }
 }
 </script>
 
 <template>
   <Header title="Personal Data">
-    <BaseButton @click="onSave">Save Changes</BaseButton>
+    <div id="header-actions"></div>
   </Header>
 
   <Menu
     v-model:selectedKeys="current"
     mode="horizontal"
-    :items="items"
+    :items="menuItems"
+    @click="onTabClick"
     :style="{
       width: '100%',
       padding: '0  var(--space-md)',
@@ -79,5 +82,3 @@ async function onSave() {
 
   <component :is="activeComponent" />
 </template>
-
-<style scoped></style>

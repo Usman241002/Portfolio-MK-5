@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 import { Flex } from 'ant-design-vue'
 import {
   ArrowRightOutlined,
@@ -9,8 +9,8 @@ import {
   SettingOutlined,
 } from '@ant-design/icons-vue'
 
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const items = [
   {
@@ -33,13 +33,40 @@ const items = [
     children: [{ title: 'Settings', key: 7, icon: SettingOutlined, link: 'settings' }],
   },
 ]
+
 const selectedKey = ref(1)
-
 const router = useRouter()
+const route = useRoute()
 
-function onClick(link: string, key: number) {
-  selectedKey.value = key
-  router.push(`/dashboard/${link}`)
+function syncSidebar() {
+  const currentPath = route.path
+
+  for (const group of items) {
+    for (const child of group.children) {
+
+      const expectedPath = child.link ? `/dashboard/${child.link}` : '/dashboard'
+
+      if (currentPath === expectedPath || currentPath === expectedPath + '/') {
+        selectedKey.value = child.key
+        return
+      }
+    }
+  }
+}
+
+onMounted(() => {
+  syncSidebar()
+})
+
+watch(
+  () => route.path,
+  () => {
+    syncSidebar()
+  }
+)
+
+function onClick(link) {
+  router.push(link ? `/dashboard/${link}` : '/dashboard')
 }
 </script>
 
@@ -52,7 +79,7 @@ function onClick(link: string, key: number) {
         <button
           v-for="child in item.children"
           :key="child.title"
-          @click="onClick(child.link, child.key)"
+          @click="onClick(child.link)"
           :class="['sidenav-button', { active: child.key === selectedKey }]"
         >
           <component :is="child.icon" />
@@ -60,8 +87,6 @@ function onClick(link: string, key: number) {
         </button>
       </Flex>
     </Flex>
-
-
   </Flex>
 </template>
 

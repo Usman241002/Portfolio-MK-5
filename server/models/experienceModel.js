@@ -13,7 +13,7 @@ async function createExperience({ start_date, end_date, title, company, employme
 
 async function putExperienceById(id, data) {
    const { start_date, end_date, title, company, employment_type, location, description } = data
-   const query = `UPDATE experience SET start_date = $1, end_date = $2, title = $3, company = $4, employment_type = $5, location = $6, description = $7 WHERE id = $8 RETURNING *`
+   const query = `UPDATE experiences SET start_date = $1, end_date = $2, title = $3, company = $4, employment_type = $5, location = $6, description = $7 WHERE id = $8 RETURNING *`
    const result = await runQuery(query, [start_date, end_date, title, company, employment_type, location, description, id])
    return result[0]
  }

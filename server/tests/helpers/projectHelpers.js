@@ -3,6 +3,7 @@ import app from "../../app.js";
 import { validToken } from "./authHelpers.js"
 
 export const validProjectPayload = {
+  id: 1,
   title: "Customer Support Portal",
   subtitle: "Internal ticket management platform",
   client: "Example Corporation",
@@ -16,7 +17,11 @@ export const validProjectPayload = {
   thumbnail_url: "https://picsum.photos/600/400?200",
   deleted: false,
   featured: true,
-  skills: [1, 2, 3],
+  skills: [
+    { id: 1 },
+    { id: 2 },
+    { id: 3 }
+  ],
   cases: [
     {
       heading: "Challenge",

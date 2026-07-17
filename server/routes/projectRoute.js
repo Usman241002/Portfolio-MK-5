@@ -18,14 +18,14 @@ projectRouter.get("/", getProjectsValidation, getProjects)
 // GET /api/projects/featured
 projectRouter.get("/featured", getProjectsValidation, getFeaturedProjects)
 // POST /api/projects/
-projectRouter.post("/", createProjectValidation, jwtMiddleware, createProject)
+projectRouter.post("/", jwtMiddleware, createProjectValidation, createProject)
 // GET /api/projects/:id
 projectRouter.get("/:id", getProjectValidation, getProject)
 // PUT /api/projects/:id
-projectRouter.put("/:id", putProjectValidation, jwtMiddleware, putProject)
+projectRouter.put("/:id", jwtMiddleware, putProjectValidation, putProject)
 // DELETE /api/projects/:id
-projectRouter.delete("/:id", deleteProjectValidation, jwtMiddleware, deleteProject)
+projectRouter.delete("/:id", jwtMiddleware, deleteProjectValidation, deleteProject)
 // POST /api/projects/:id/thumbnail
-projectRouter.post('/:id/thumbnail', uploadThumbnail);
+projectRouter.post('/:id/thumbnail', jwtMiddleware, uploadThumbnail);
 
 export default projectRouter;

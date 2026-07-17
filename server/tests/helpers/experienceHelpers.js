@@ -4,6 +4,7 @@ import { validToken } from "./authHelpers.js"
 import dayjs from "dayjs";
 
 const validExperiencePayload = {
+  id: 1,
   start_date: dayjs().subtract(1, "year").format("YYYY-MM-DD"),
   end_date: null,
   title: "MSc Computer Science",

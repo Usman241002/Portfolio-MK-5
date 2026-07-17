@@ -119,7 +119,7 @@ describe("Project API", () => {
     });
   });
 
-  describe.only("GET /api/projects/featured", () => {
+  describe("GET /api/projects/featured", () => {
     beforeEach(async () => {
       await seedSkills();
       await seedFeaturedProjects();
@@ -474,7 +474,7 @@ describe("Project API", () => {
       expect(res.body.project.deleted).toBe(true)
     })
 
-    it("should return 400 if invalid input", async () => {
+    it.only("should return 400 if invalid input", async () => {
       const res = await deleteProject("number", undefined)
 
       expect(res.status).toBe(400)

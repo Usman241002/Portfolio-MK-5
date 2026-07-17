@@ -11,10 +11,10 @@ const educationRouter = new Router({
 // GET /api/education/
 educationRouter.get("/", getAllEducationValidation, getAllEducation)
 // POST /api/education/
-educationRouter.post("/", createEducationValidation, jwtMiddleware, createEducation)
+educationRouter.post("/", jwtMiddleware, createEducationValidation, createEducation)
 // PUT /api/education/:id
-educationRouter.put("/:id", putEducationValidation, jwtMiddleware, putEducation)
+educationRouter.put("/:id", jwtMiddleware, putEducationValidation, putEducation)
 // DELETE /api/education/:id
-educationRouter.delete("/:id", deleteEducationValidation, jwtMiddleware, deleteEducation)
+educationRouter.delete("/:id", jwtMiddleware, deleteEducationValidation, deleteEducation)
 
 export default educationRouter;

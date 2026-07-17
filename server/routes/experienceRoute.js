@@ -12,10 +12,10 @@ const experienceRouter = new Router({
 // GET /api/experiences/
 experienceRouter.get("/", getAllExperiencesValidation, getExperiences)
 // POST /api/experiences/
-experienceRouter.post("/", createExperienceValidation, jwtMiddleware, createExperience)
+experienceRouter.post("/", jwtMiddleware, createExperienceValidation, createExperience)
 // PUT /api/experiences/:id
-experienceRouter.put("/:id", putExperienceValidation, jwtMiddleware, putExperience)
+experienceRouter.put("/:id", jwtMiddleware, putExperienceValidation, putExperience)
 // DELETE /api/experiences/:id
-experienceRouter.delete("/:id", deleteExperienceValidation, jwtMiddleware, deleteExperience)
+experienceRouter.delete("/:id", jwtMiddleware, deleteExperienceValidation, deleteExperience)
 
 export default experienceRouter;

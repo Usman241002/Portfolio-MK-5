@@ -125,7 +125,8 @@
       "type": "object",
       "properties": {
         "id": {
-          "type": ["string", "integer"]
+          "type": ["string", "integer"],
+          "pattern": "^[0-9]+$"
         }
       },
       "required": ["id"],

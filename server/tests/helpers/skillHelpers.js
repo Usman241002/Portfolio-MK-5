@@ -3,6 +3,7 @@ import app from "../../app.js";
 import { validToken } from "./authHelpers.js"
 
 const validSkillPayload = {
+  id: 1,
   name: "React",
   year: 2025
 }

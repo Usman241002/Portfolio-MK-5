@@ -11,6 +11,6 @@ const profileRouter = new Router({
 // GET /api/profile/
 profileRouter.get("/", getProfileValidation, getProfile)
 // PUT /api/profile/
-profileRouter.put("/", putProfileValidation, jwtMiddleware, putProfile)
+profileRouter.put("/", jwtMiddleware, putProfileValidation, putProfile)
 
 export default profileRouter;

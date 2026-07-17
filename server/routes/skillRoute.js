@@ -16,10 +16,10 @@ const skillRouter = new Router({
 // GET /api/skills/
 skillRouter.get("/", getSkillsValidation, getSkills)
 // POST /api/skills/
-skillRouter.post("/", createSkillValidation, jwtMiddleware, createSkill)
+skillRouter.post("/", jwtMiddleware, createSkillValidation, createSkill)
 // // PUT /api/skills/:id
-skillRouter.put("/:id", putSkillValidation, jwtMiddleware, putSkill)
+skillRouter.put("/:id", jwtMiddleware, putSkillValidation, putSkill)
 // // DELETE /api/skills/:id
-skillRouter.delete("/:id", deleteSkillValidation, jwtMiddleware, deleteSkill)
+skillRouter.delete("/:id", jwtMiddleware, deleteSkillValidation, deleteSkill)
 
 export default skillRouter;

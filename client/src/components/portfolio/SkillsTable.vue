@@ -8,7 +8,6 @@ const { skills } = storeToRefs(skillStore)
 
 onMounted(async () => {
   await skillStore.fetchSkills()
-  console.log('skills:', JSON.stringify(skills.value, null, 2))
 })
 </script>
 

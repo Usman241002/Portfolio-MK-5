@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, message } from 'vue'
 import { Row, Col, Flex, Form, Input, Divider } from 'ant-design-vue'
 import { ArrowRightOutlined } from '@ant-design/icons-vue'
 import Title from '@/components/portfolio/Title.vue'
@@ -54,10 +54,15 @@ const properties = computed(() => [
 ])
 
 async function onSubmit() {
-  await contactStore.sendContactForm(contactFormState)
-  contactFormState.name = ''
-  contactFormState.email = ''
-  contactFormState.message = ''
+  try {
+    await contactStore.sendContactForm(contactFormState)
+    message.success('Message sent successfully!')
+    contactFormState.name = ''
+    contactFormState.email = ''
+    contactFormState.message = ''
+  } catch (error) {
+    message.error(error)
+  }
 }
 </script>
 

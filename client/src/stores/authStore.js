@@ -44,7 +44,6 @@ const useAuthStore = defineStore('auth', () => {
 
   async function verifyToken() {
     try {
-      console.log('TRIGGER')
       const response = await fetch(`${API_URL}/api/auth/verify`, {
         method: 'POST',
         headers: {

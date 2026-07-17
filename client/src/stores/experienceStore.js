@@ -36,8 +36,6 @@ const useExperienceStore = defineStore("experience", () => {
       const data = await response.json()
       if (!response.ok) throw new Error(data.message || 'Failed to fetch experiences')
       experiences.value = data.experiences
-      console.log(experiences.value)
-      console.log(data.experiences)
     } catch(error) {
       console.error(error)
     } finally {

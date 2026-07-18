@@ -62,8 +62,8 @@ const useEducationStore = defineStore("education", () => {
         throw new Error(data.message || 'Failed to create education')
       }
 
-      const newEdu = data.education || data
-      education.value.push(newEdu)
+      const educationId = data.educationId
+      education.value.push({...currentEducation.value, id: educationId})
 
       return data
     } catch(error) {

@@ -1,16 +1,18 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { Flex, Row, Col, Divider } from 'ant-design-vue'
+import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 import Subtitle from '@/components/portfolio/Subtitle.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useprojectStore from '@/stores/projectStore.js'
 import Badge from '@/components/portfolio/Badge.vue'
 import PropertiesCard from '@/components/portfolio/PropertiesCard.vue'
-import dayjs from 'dayjs'
 import CaseStat from '@/components/portfolio/CaseStat.vue'
 import { API_URL } from '@/config.js'
+import BaseButton from '@/components/portfolio/BaseButton.vue'
 
 const route = useRoute()
+const router = useRouter()
 const projectStore = useprojectStore()
 
 const project = ref(null)
@@ -29,7 +31,7 @@ const properties = computed(() => {
     { name: 'role', value: project.value.role || 'N/A' },
     {
       name: 'year',
-      value: project.value.year ? dayjs(project.value.year).format('YYYY') : 'N/A'
+      value: project.value.year
     },
     {
       name: 'stack',
@@ -47,9 +49,17 @@ const properties = computed(() => {
     </Flex>
 
   <Flex v-else-if="project" gap="24" vertical>
+
+
     <Row :gutter="[24, 24]">
       <Col :xs="24" :md="16">
+
         <Flex gap="16" class="hero container" vertical>
+          <Flex>
+            <BaseButton variant="secondary" @click="router.back()">
+              <ArrowLeftOutlined /> Back
+            </BaseButton>
+          </Flex>
           <p class="project-id">project_{{ project.id }}.tsx</p>
           <h2>{{ project.title }}</h2>
           <h5>{{ project.description }}</h5>
@@ -90,11 +100,11 @@ const properties = computed(() => {
         </Col>
         <Col :xs="24" :md="18">
           <Flex gap="24" vertical>
-            <h5>{{ caseItem.heading }}</h5>
+            <h5>{{ caseItem.subheading }}</h5>
             <p>
               {{ caseItem.description }}
             </p>
-            <CaseStat :stat="caseItem.stat" :desc="caseItem.stat_description" />
+            <CaseStat v-if="caseItem.stat" :stat="caseItem.stat" :desc="caseItem.stat_description" />
           </Flex>
         </Col>
       </Row>

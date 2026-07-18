@@ -9,13 +9,13 @@ import {
   Row,
   Col,
   Input,
-  InputNumber,
   Select,
   Button,
   Collapse,
   Upload,
   Typography,
-  message, // Added message for toasts
+  message,
+  DatePicker,
 } from 'ant-design-vue'
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons-vue'
 import BaseButton from '../portfolio/BaseButton.vue'
@@ -24,7 +24,7 @@ import CaseCard from './CaseCard.vue'
 import { storeToRefs } from 'pinia'
 
 import useSkillStore from '@/stores/skillStore.js'
-import useProjectStore from '@/stores/projectStore.js' // Fixed capital P
+import useProjectStore from '@/stores/projectStore.js'
 
 const props = defineProps({
   modalVisible : Boolean
@@ -38,11 +38,27 @@ const skillStore = useSkillStore()
 const { currentProject } = storeToRefs(projectStore)
 const uploadFileList = ref([])
 
-// 1. SMART MODAL: Check if we have an ID to know if it's Edit or Create
 const isEditing = computed(() => !!currentProject.value.id)
 
+const formData = ref({
+  cases: []
+})
+
 watch(
-  () => currentProject.value.thumbnail,
+  () => currentProject.value,
+  (newVal) => {
+    formData.value = newVal
+      ? JSON.parse(JSON.stringify({
+          ...newVal,
+          year: newVal.year ? String(newVal.year) : undefined
+        }))
+      : { cases: [] }
+  },
+  { immediate: true, deep: true }
+)
+
+watch(
+  () => formData.value.thumbnail,
   (thumbnail) => {
     if (typeof thumbnail === 'string') {
       uploadFileList.value = [
@@ -62,13 +78,12 @@ const skillOptions = computed(() =>
   skillStore.skills.map((skill) => ({ label: skill.name, value: skill.id })),
 )
 
-// 2. SKILLS TRANSLATOR: Converts [1, 2] to [{id: 1}, {id: 2}] for the backend
 const selectedSkillIds = computed({
   get() {
-    return currentProject.value.skills?.map((skill) => skill.id) || []
+    return formData.value.skills?.map((skill) => skill.id) || []
   },
   set(newIdsArray) {
-    currentProject.value.skills = newIdsArray.map(id => ({ id }))
+    formData.value.skills = newIdsArray.map(id => ({ id }))
   }
 })
 
@@ -77,7 +92,8 @@ onMounted(async () => {
 })
 
 function onAddSection() {
-  currentProject.value.cases.push({
+  if (!formData.value.cases) formData.value.cases = []
+  formData.value.cases.push({
     id: Date.now(),
     heading: '',
     subheading: '',
@@ -88,12 +104,16 @@ function onAddSection() {
 }
 
 function onRemove(caseId) {
-  currentProject.value.cases = currentProject.value.cases.filter((c) => c.id !== caseId)
+  formData.value.cases = formData.value.cases.filter((c) => c.id !== caseId)
 }
 
-// 3. ROUTE THE SAVE ACTION properly
 async function onSave() {
   try {
+    currentProject.value = {
+      ...formData.value,
+      year: formData.value.year ? parseInt(formData.value.year, 10) : null
+    }
+
     if (isEditing.value) {
       await projectStore.updateProjectById()
     } else {
@@ -108,7 +128,7 @@ async function onSave() {
 }
 
 const beforeUpload = (file) => {
-  currentProject.value.thumbnail = file
+  formData.value.thumbnail = file
 
   uploadFileList.value = [
     {
@@ -123,7 +143,7 @@ const beforeUpload = (file) => {
 }
 
 function onRemoveImage() {
-  currentProject.value.thumbnail = null
+  formData.value.thumbnail = null
   uploadFileList.value = []
 }
 </script>
@@ -160,24 +180,28 @@ function onRemoveImage() {
         <Row :gutter="12">
           <Col :span="12">
             <Form.Item class="form-label" label="Project Title">
-              <Input type="text" class="form-input" v-model:value="currentProject.title" />
+              <Input type="text" class="form-input" v-model:value="formData.title" />
             </Form.Item>
           </Col>
           <Col :span="12">
             <Form.Item class="form-label" label="Client Name">
-              <Input type="text" class="form-input" v-model:value="currentProject.client" />
+              <Input type="text" class="form-input" v-model:value="formData.client" />
             </Form.Item>
           </Col>
           <Col :span="12">
             <Form.Item class="form-label" label="Role">
-              <Input type="text" class="form-input" v-model:value="currentProject.role" />
+              <Input type="text" class="form-input" v-model:value="formData.role" />
             </Form.Item>
           </Col>
           <Col :span="12">
             <Form.Item class="form-label" label="Year">
-              <InputNumber
+              <DatePicker
                 class="form-input"
-                v-model:value="currentProject.year"
+                picker="year"
+                format="YYYY"
+                value-format="YYYY"
+                v-model:value="formData.year"
+                placeholder="Select Year"
                 style="width: 100%"
               />
             </Form.Item>
@@ -187,23 +211,23 @@ function onRemoveImage() {
               <Input.TextArea
                 :style="{ resize: 'none', height: '5rem' }"
                 class="form-input"
-                v-model:value="currentProject.description"
+                v-model:value="formData.description"
               />
             </Form.Item>
           </Col>
           <Col :span="12">
             <Form.Item class="form-label" label="Github URL">
-              <Input type="text" class="form-input" v-model:value="currentProject.repository_url" />
+              <Input type="text" class="form-input" v-model:value="formData.repository_url" />
             </Form.Item>
           </Col>
           <Col :span="12">
             <Form.Item class="form-label" label="Demo URL">
-              <Input type="text" class="form-input" v-model:value="currentProject.live_demo_url" />
+              <Input type="text" class="form-input" v-model:value="formData.live_demo_url" />
             </Form.Item>
           </Col>
           <Col :span="24">
             <Form.Item class="form-label" label="Subtitle">
-              <Input type="text" class="form-input" v-model:value="currentProject.subtitle" />
+              <Input type="text" class="form-input" v-model:value="formData.subtitle" />
             </Form.Item>
           </Col>
           <Col :span="12">
@@ -220,7 +244,7 @@ function onRemoveImage() {
             <Form.Item class="form-label" label="Status">
               <Select
                 class="form-select"
-                v-model:value="currentProject.status"
+                v-model:value="formData.status"
                 :options="[
                   { value: 'ongoing', label: 'Ongoing' },
                   { value: 'completed', label: 'Completed' },
@@ -264,6 +288,7 @@ function onRemoveImage() {
             </Form.Item>
           </Col>
         </Row>
+
         <Subtitle :style="{ marginTop: '1rem' }">Case Study Section</Subtitle>
         <Divider
           :style="{
@@ -271,11 +296,12 @@ function onRemoveImage() {
             border: '1px solid var(--border)',
           }"
         />
+
         <Flex vertical>
           <Collapse class="case-card" :bordered="false">
             <Collapse.Panel
               class="case-panel"
-              v-for="(c, index) in currentProject.cases"
+              v-for="(c, index) in formData.cases"
               :key="index"
             >
               <template #header>

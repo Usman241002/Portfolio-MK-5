@@ -1,12 +1,12 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getAllProjects() {
-  const result = await runQuery("SELECT * FROM projects WHERE deleted = false");
+  const result = await runQuery("SELECT * FROM projects WHERE deleted = false ORDER BY id");
   return result
 }
 
 async function getFeaturedProjects() {
-  const result = await runQuery("SELECT * FROM projects WHERE deleted = false AND featured = true");
+  const result = await runQuery("SELECT * FROM projects WHERE deleted = false AND featured = true ORDER BY id");
   return result
 }
 
@@ -22,12 +22,22 @@ async function getProjectById(id) {
 }
 
 async function putProjectById(id, data) {
-  const { title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured, deleted } = data
+  const {
+    title, subtitle, client, role, year, description,
+    status, repository_url, live_demo_url, thumbnail_url, featured, deleted
+  } = data;
+
   const result = await runQuery(
-    "UPDATE projects SET title = $1, subtitle = $2, client = $3, role = $4, year = $5, description = $6, status = $7, repository_url = $8, live_demo_url = $9, featured = $10, deleted = $11 WHERE id = $12 RETURNING *",
-    [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, featured, deleted, id]
-  )
-  return result[0]
+    `UPDATE projects
+     SET title = $1, subtitle = $2, client = $3, role = $4, year = $5,
+         description = $6, status = $7, repository_url = $8, live_demo_url = $9,
+         thumbnail_url = $10, featured = $11, deleted = $12
+     WHERE id = $13
+     RETURNING *`,
+    [title, subtitle, client, role, year, description, status, repository_url, live_demo_url, thumbnail_url, featured, deleted, id]
+  );
+
+  return result[0];
 }
 
 async function deleteProjectById(id) {

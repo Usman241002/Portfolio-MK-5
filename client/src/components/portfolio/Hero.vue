@@ -80,7 +80,9 @@ const phrases = [
 
     <Col :xs="24" :md="8"
       ><Flex class="container" align="end" gap="16" vertical>
-        <StatCard :title="projectStore.projects.length" desc="total projects" /><StatCard
+
+        <StatCard :title="projectStore.projects.length" desc="total projects" />
+        <StatCard
           :title="`${new Date().getFullYear() - oldestYear()}yr`"
           desc="programming experience"
         /><PropertiesCard>

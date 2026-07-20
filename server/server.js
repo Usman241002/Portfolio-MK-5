@@ -3,8 +3,8 @@ import { initDB } from "./database/helpers/database.js";
 
 const PORT = 3000; //server listening on port 3000
 
-//load up schema
-// await initDB();
+// load up schema
+await initDB();
 
 //enabling the server to listen on port
 app.listen(PORT, "0.0.0.0", () => {

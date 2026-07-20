@@ -1,7 +1,7 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getCasesByProjectId(projectId) {
-  const result = await runQuery("SELECT * FROM cases WHERE project_id = $1", [projectId]);
+  const result = await runQuery("SELECT * FROM cases WHERE project_id = $1 ORDER BY id", [projectId]);
   return result
 }
 
@@ -13,19 +13,20 @@ async function createCaseByProjectId(projectId, caseData) {
   return result[0].id
 }
 
-async function putCaseById(id, updates) {
-  const keys = Object.keys(updates)
-  const values = Object.values(updates)
+async function putCaseById(id, data) {
+  // Explicitly extract only the fields that belong in the cases table
+  const { heading, subheading, description, stat, stat_description, image_url } = data;
 
-  if (keys.length === 0) {
-   throw new Error("No update fields provided.");
-  }
+  const result = await runQuery(
+    `UPDATE cases
+     SET heading = $1, subheading = $2, description = $3,
+         stat = $4, stat_description = $5, image_url = $6
+     WHERE id = $7
+     RETURNING *`,
+    [heading, subheading, description, stat, stat_description, image_url, id]
+  );
 
-  const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-  const query = `UPDATE cases SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`
-
-  const result = await runQuery(query, [...values, id])
-  return result[0]
+  return result[0];
 }
 
 async function deleteCasesByProjectId(id) {

@@ -1,7 +1,7 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getProjectSkillsByProjectId(projectId) {
-  const result = await runQuery("SELECT * FROM project_skills ps LEFT JOIN skills s ON ps.skill_id = s.id WHERE project_id = $1", [projectId]);
+  const result = await runQuery("SELECT * FROM project_skills ps LEFT JOIN skills s ON ps.skill_id = s.id WHERE project_id = $1 ORDER BY s.id", [projectId]);
   return result
 }
 

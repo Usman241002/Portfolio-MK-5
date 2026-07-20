@@ -1,7 +1,7 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getAllSkills() {
-  const result = await runQuery("SELECT * FROM skills;");
+  const result = await runQuery("SELECT * FROM skills ORDER BY year ASC");
   return result
 }
 

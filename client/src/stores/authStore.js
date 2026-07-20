@@ -43,19 +43,15 @@ const useAuthStore = defineStore('auth', () => {
   }
 
   async function verifyToken() {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/verify`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token.value}`,
-        },
-      })
+    const response = await fetch(`${API_URL}/api/auth/verify`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    })
 
-      if (!response.ok) {
-        throw new Error('Invalid token')
-      }
-    } catch (error) {
-      console.error(error)
+    if (!response.ok) {
+      throw new Error('Invalid token')
     }
   }
 

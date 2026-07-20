@@ -26,7 +26,7 @@ import Navbar from '@/components/portfolio/Navbar.vue'
       }"
     >
       <p class="footer">
-        Usman Khalid. All rights reserved. | Designed and developed by Usman Khalid
+        &copy; {{new Date().getFullYear()}} Usman Khalid. All rights reserved. | Designed and developed by Usman Khalid
       </p>
     </Layout.Footer>
   </Layout>

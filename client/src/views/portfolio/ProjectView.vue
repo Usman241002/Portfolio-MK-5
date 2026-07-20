@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { Flex, Row, Col, Divider } from 'ant-design-vue'
-import { ArrowLeftOutlined } from '@ant-design/icons-vue'
+import { ArrowLeftOutlined, GithubOutlined, PlayCircleOutlined } from '@ant-design/icons-vue'
 import Subtitle from '@/components/portfolio/Subtitle.vue'
 import { useRoute, useRouter } from 'vue-router'
 import useprojectStore from '@/stores/projectStore.js'
@@ -57,7 +57,7 @@ const properties = computed(() => {
         <Flex gap="16" class="hero container" vertical>
           <Flex>
             <BaseButton variant="secondary" @click="router.back()">
-              <ArrowLeftOutlined /> Back
+              <ArrowLeftOutlined :style="{color: 'var(--text-secondary)'}" /> Back
             </BaseButton>
           </Flex>
           <p class="project-id">project_{{ project.id }}.tsx</p>
@@ -68,6 +68,19 @@ const properties = computed(() => {
             <Badge v-for="skill in project.skills" :key="skill.id">
               {{ skill.name }}
             </Badge>
+          </Flex>
+
+          <Flex gap="12" v-if="project.repository_url || project.live_demo_url">
+            <a v-if="project.repository_url" :href="project.repository_url">
+            <BaseButton  variant="secondary" >
+                <GithubOutlined :style="{color: 'var(--text-secondary)'}" /> Github Repo
+            </BaseButton>
+             </a>
+            <a v-if="project.live_demo_url" :href="project.live_demo_url">
+            <BaseButton  variant="secondary" >
+                <PlayCircleOutlined :style="{ color: 'var(--text-secondary)' }" /> Demo
+            </BaseButton>
+            </a>
           </Flex>
         </Flex>
       </Col>
@@ -84,6 +97,8 @@ const properties = computed(() => {
             <p class="property-value">"{{ project.status }}"</p>
           </PropertiesCard>
         </Flex>
+
+
       </Col>
     </Row>
 
@@ -162,6 +177,13 @@ const properties = computed(() => {
   z-index: 2;
   background: var(--background);
   padding-bottom: 0.5rem;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
 }
 
 /* --- New Responsive Styles --- */

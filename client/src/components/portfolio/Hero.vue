@@ -10,11 +10,13 @@ import PropertiesCard from '@/components/portfolio/PropertiesCard.vue'
 import Cursor from '@/components/portfolio/Cursor.vue'
 
 import useProfileStore from '@/stores/profileStore'
+import useSkillStore from '@/stores/skillStore'
 import useprojectStore from '@/stores/projectStore'
 
 import { useRouter } from 'vue-router'
 
 const profileStore = useProfileStore()
+const skillStore = useSkillStore()
 const projectStore = useprojectStore()
 
 const router = useRouter()
@@ -22,6 +24,7 @@ const router = useRouter()
 onMounted(async () => {
   await profileStore.fetchProfile()
   await projectStore.fetchProjects()
+  await skillStore.fetchSkills()
 })
 
 const properties = computed(() => [
@@ -29,6 +32,20 @@ const properties = computed(() => [
   { name: 'Role', value: profileStore.profile.role },
   { name: 'Location', value: profileStore.profile.location },
 ])
+
+
+
+const oldestYear = () => {
+  let year
+
+  skillStore.skills.forEach((skill) => {
+    if (year === undefined || skill.year < year) {
+      year = skill.year
+    }
+  })
+
+  return year
+}
 
 const phrases = [
   'Frontend Builder.',
@@ -64,7 +81,7 @@ const phrases = [
     <Col :xs="24" :md="8"
       ><Flex class="container" align="end" gap="16" vertical>
         <StatCard :title="projectStore.projects.length" desc="total projects" /><StatCard
-          title="4yr"
+          :title="`${new Date().getFullYear() - oldestYear()}yr`"
           desc="programming experience"
         /><PropertiesCard>
           <Subtitle :style="{ color: 'var(--accent)' }">Properties</Subtitle>

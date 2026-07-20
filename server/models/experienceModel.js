@@ -1,7 +1,7 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getAllExperiences() {
-  const result = await runQuery("SELECT * FROM experiences");
+  const result = await runQuery("SELECT * FROM experiences ORDER BY end_date DESC");
   return result
 }
 

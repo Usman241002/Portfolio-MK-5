@@ -29,7 +29,7 @@ async function putCaseById(id, data) {
   return result[0];
 }
 
-async function deleteCasesByProjectId(id) {
+async function deleteCaseById(id) { // Renamed from deleteCasesByProjectId
   const result = await runQuery("DELETE FROM cases WHERE id = $1 RETURNING id", [id]);
   return result[0]
 }
@@ -38,5 +38,5 @@ export const caseModel = {
   getCasesByProjectId,
   createCaseByProjectId,
   putCaseById,
-  deleteCasesByProjectId
+  deleteCaseById
 };

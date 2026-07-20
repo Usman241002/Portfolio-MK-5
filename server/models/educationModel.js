@@ -1,7 +1,7 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getAllEducation() {
-  const result = await runQuery("SELECT * FROM education");
+  const result = await runQuery("SELECT * FROM education ORDER BY end_date DESC");
   return result
 }
 

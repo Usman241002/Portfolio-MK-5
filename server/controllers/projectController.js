@@ -131,7 +131,6 @@ export const getProject = async (ctx) => {
 export const putProject = async (ctx) => {
   try {
     const projectId = ctx.params.id;
-    console.log(projectId);
 
     const { skills, cases, ...projectData } = ctx.request.body;
 
@@ -142,14 +141,12 @@ export const putProject = async (ctx) => {
       return;
     }
 
-    // Merge existing project with incoming updates
     const mergedProjectData = { ...existingProject, ...projectData };
 
     if (Object.keys(projectData).length > 0) {
       await projectModel.putProjectById(projectId, mergedProjectData);
     }
 
-    // Wipe and Replace Skills
     if (skills) {
       await projectSkillModel.deleteProjectSkillsByProjectId(projectId);
 
@@ -161,19 +158,27 @@ export const putProject = async (ctx) => {
       }
     }
 
-    // Upsert Cases (Update existing, create new)
     if (cases) {
+      const existingCases = await caseModel.getCasesByProjectId(projectId);
+      const existingCaseIds = existingCases.map(c => c.id);
+
+      const incomingCaseIds = cases
+        .map(c => c.id)
+        .filter(id => id && !(typeof id === 'string' && id.includes('temp')) && Number(id) <= 2147483647)
+
+      const casesToDelete = existingCaseIds.filter(id => !incomingCaseIds.includes(id));
+      if (casesToDelete.length > 0) {
+        const deletePromises = casesToDelete.map(id => caseModel.deleteCaseById(id));
+        await Promise.all(deletePromises);
+      }
+
       if (cases.length > 0) {
         const casePromises = cases.map(caseItem => {
-          // Check if it has an ID AND if that ID is a valid Postgres integer
-          // Standard PostgreSQL integer max limit is 2147483647
           const isTempId = typeof caseItem.id === 'string' && caseItem.id.includes('temp') || Number(caseItem.id) > 2147483647;
 
           if (caseItem.id && !isTempId) {
-            // It's a real database ID, update it
             return caseModel.putCaseById(caseItem.id, caseItem);
           } else {
-            // It's a temporary frontend ID (or it has no ID), create a new one
             return caseModel.createCaseByProjectId(projectId, caseItem);
           }
         });

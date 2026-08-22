@@ -17,7 +17,7 @@ const useContactStore = defineStore('contact', () => {
       })
       const data = await response.json()
       if (!response.ok) {
-        throw Error(data.message || 'Login failed')
+        throw Error(data.message || 'Contact failed')
       }
 
       return data

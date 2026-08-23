@@ -59,7 +59,7 @@ const { project, type = 'standard' } = defineProps({
 }
 
 .project-cover-placeholder {
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   text-align: center;

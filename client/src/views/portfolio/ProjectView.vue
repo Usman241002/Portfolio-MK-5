@@ -102,9 +102,9 @@ const properties = computed(() => {
       </Col>
     </Row>
 
-    <Flex v-if="project.thumbnail" vertical>
+    <Flex v-if="project.thumbnail_url" vertical>
       <Divider :style="{ border: '1px solid var(--border)' }" />
-      <img :src="`${API_URL}${project.thumbnail}`" class="responsive-img" />
+      <img :src="`${API_URL}${project.thumbnail_url}`" class="responsive-img" />
     </Flex>
 
     <div v-for="caseItem in project.cases" :key="caseItem.id">

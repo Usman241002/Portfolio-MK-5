@@ -14,8 +14,8 @@ const { project, type = 'standard' } = defineProps({
 
 <template>
   <Card class="project-card" @click="router.push(`/projects/${project.id}`)">
-    <template v-if="type === 'cover' && project.thumbnail" #cover>
-      <img alt="example" :src="`${API_URL}${project.thumbnail}`" />
+    <template v-if="type === 'cover' && project.thumbnail_url" #cover>
+      <img alt="example" :src="`${API_URL}${project.thumbnail_url}`" />
     </template>
     <Flex gap="8" vertical
       ><p class="project-id">project_{{ project.id }}.tsx</p>

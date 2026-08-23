@@ -62,8 +62,10 @@ const { project, type = 'standard' } = defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+
   background: var(--bg);
-  color: var(--text-secondary);
+  color: var(--accent);
   font: var(--micro);
   letter-spacing: var(--micro-tracking);
   text-transform: lowercase;

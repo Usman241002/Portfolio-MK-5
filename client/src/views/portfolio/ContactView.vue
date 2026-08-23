@@ -125,7 +125,7 @@ async function onSubmit() {
               class="property-value"
               :style="{ color: 'var(--accent)' }"
               >./linkedin</a
-            ><a href="/" class="property-value" :style="{ color: 'var(--accent)' }">./read.cv</a>
+            ><a href="/cv/CV%20-%20USMAN%20KHALID.pdf" class="property-value" :style="{ color: 'var(--accent)' }">./read.cv</a>
           </Flex>
         </PropertiesCard>
       </Flex>

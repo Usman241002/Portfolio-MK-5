@@ -175,7 +175,7 @@ const properties = computed(() => {
   align-self: flex-start;
   height: fit-content;
   z-index: 2;
-  background: var(--background);
+  background: var(--bg);
   padding-bottom: 0.5rem;
 }
 

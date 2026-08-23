@@ -1,12 +1,12 @@
 import { runQuery } from "../database/helpers/database.js";
 
 async function getAllProjects() {
-  const result = await runQuery("SELECT * FROM projects WHERE deleted = false ORDER BY id");
+  const result = await runQuery("SELECT * FROM projects WHERE deleted = false ORDER BY id DESC");
   return result
 }
 
 async function getFeaturedProjects() {
-  const result = await runQuery("SELECT * FROM projects WHERE deleted = false AND featured = true ORDER BY id");
+  const result = await runQuery("SELECT * FROM projects WHERE deleted = false AND featured = true ORDER BY id DESC");
   return result
 }
 
@@ -17,7 +17,10 @@ async function createProject({ title, subtitle, client, role, year, description,
 }
 
 async function getProjectById(id) {
-  const result = await runQuery("SELECT * FROM projects WHERE id = $1", [id]);
+  const result = await runQuery(
+    "SELECT * FROM projects WHERE id = $1 AND deleted = false",
+    [id],
+  );
   return result[0]
 }
 

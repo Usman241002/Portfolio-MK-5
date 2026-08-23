@@ -31,7 +31,7 @@ const properties = computed(() => {
     { name: 'role', value: project.value.role || 'N/A' },
     {
       name: 'year',
-      value: project.value.year
+      value: project.value.year,
     },
     {
       name: 'stack',
@@ -44,20 +44,17 @@ const properties = computed(() => {
 </script>
 
 <template>
-  <Flex v-if="projectStore.loading" justify="center" style="padding: 2rem;">
+  <Flex v-if="projectStore.loading" justify="center" style="padding: 2rem">
     <p>Loading project...</p>
-    </Flex>
+  </Flex>
 
   <Flex v-else-if="project" gap="24" vertical>
-
-
     <Row :gutter="[24, 24]">
       <Col :xs="24" :md="16">
-
         <Flex gap="16" class="hero container" vertical>
           <Flex>
             <BaseButton variant="secondary" @click="router.back()">
-              <ArrowLeftOutlined :style="{color: 'var(--text-secondary)'}" /> Back
+              <ArrowLeftOutlined :style="{ color: 'var(--text-secondary)' }" /> Back
             </BaseButton>
           </Flex>
           <p class="project-id">project_{{ project.id }}.tsx</p>
@@ -72,14 +69,14 @@ const properties = computed(() => {
 
           <Flex gap="12" v-if="project.repository_url || project.live_demo_url">
             <a v-if="project.repository_url" :href="project.repository_url">
-            <BaseButton  variant="secondary" >
-                <GithubOutlined :style="{color: 'var(--text-secondary)'}" /> Github Repo
-            </BaseButton>
-             </a>
+              <BaseButton variant="secondary">
+                <GithubOutlined :style="{ color: 'var(--text-secondary)' }" /> Github Repo
+              </BaseButton>
+            </a>
             <a v-if="project.live_demo_url" :href="project.live_demo_url">
-            <BaseButton  variant="secondary" >
+              <BaseButton variant="secondary">
                 <PlayCircleOutlined :style="{ color: 'var(--text-secondary)' }" /> Demo
-            </BaseButton>
+              </BaseButton>
             </a>
           </Flex>
         </Flex>
@@ -97,8 +94,6 @@ const properties = computed(() => {
             <p class="property-value">"{{ project.status }}"</p>
           </PropertiesCard>
         </Flex>
-
-
       </Col>
     </Row>
 
@@ -119,14 +114,18 @@ const properties = computed(() => {
             <p>
               {{ caseItem.description }}
             </p>
-            <CaseStat v-if="caseItem.stat" :stat="caseItem.stat" :desc="caseItem.stat_description" />
+            <CaseStat
+              v-if="caseItem.stat"
+              :stat="caseItem.stat"
+              :desc="caseItem.stat_description"
+            />
           </Flex>
         </Col>
       </Row>
     </div>
   </Flex>
 
-  <Flex v-else justify="center" style="padding: 2rem;">
+  <Flex v-else justify="center" style="padding: 2rem">
     <p>Project not found.</p>
   </Flex>
 </template>
@@ -142,7 +141,6 @@ const properties = computed(() => {
   font: var(--body);
   color: var(--text-secondary);
   letter-spacing: var(--heading-md-tracking);
-
 }
 
 .property-name {
@@ -190,9 +188,12 @@ a {
 
 /* Ensures the image scales down correctly without breaking its container */
 .responsive-img {
-  max-width: 100%;
+  width: 100%;
+  max-width: 900px;
   height: auto;
   display: block;
+  margin: 0 auto;
+  border: 1px solid var(--border);
 }
 
 /* Aligns the properties card to the left on mobile, and right on desktop */
